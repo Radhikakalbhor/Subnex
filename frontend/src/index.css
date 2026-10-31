@@ -39,33 +39,84 @@
   }
 }
 
-@layer components {
-  /* Minimal card container tokens */
-  .saas-card {
-    @apply bg-white rounded-[22px] border border-black/[0.06] shadow-[0_2px_12px_rgba(0,0,0,0.02)] transition-all duration-200;
-  }
-
-  .saas-card-interactive {
-    @apply bg-white rounded-[22px] border border-black/[0.06] shadow-[0_2px_12px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.04)] hover:border-black/[0.09] transition-all duration-200;
-  }
-
-  .saas-pill-btn {
-    @apply inline-flex items-center justify-center px-4 py-2 rounded-full text-xs font-semibold tracking-tight transition-all duration-150 active:scale-[0.98];
-  }
-
-  .saas-pill-btn-primary {
-    @apply saas-pill-btn bg-neutral-900 text-white hover:bg-black shadow-xs;
-  }
-
-  .saas-pill-btn-secondary {
-    @apply saas-pill-btn bg-[#F3F4F6] text-neutral-800 hover:bg-[#EAEBED] border border-black/[0.04];
-  }
-
-  .saas-input {
-    @apply w-full bg-[#F8F9FA] hover:bg-[#F2F3F5] focus:bg-white text-xs text-neutral-900 placeholder:text-neutral-400 border border-black/[0.07] focus:border-neutral-900 rounded-xl px-3.5 py-2.5 outline-none transition-all duration-150 focus:ring-2 focus:ring-neutral-900/5;
-  }
+/* Minimal card container tokens using pure CSS to avoid PostCSS arbitrary value splitting */
+.saas-card {
+  background-color: #FFFFFF;
+  border-radius: 22px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.02);
+  transition: all 0.2s ease;
 }
 
+.saas-card-interactive {
+  background-color: #FFFFFF;
+  border-radius: 22px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.02);
+  transition: all 0.2s ease;
+}
+
+.saas-card-interactive:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.09);
+}
+
+.saas-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  transition: all 0.15s ease;
+}
+
+.saas-pill-btn:active {
+  transform: scale(0.98);
+}
+
+.saas-pill-btn-primary {
+  background-color: #121316;
+  color: #FFFFFF;
+}
+
+.saas-pill-btn-primary:hover {
+  background-color: #000000;
+}
+
+.saas-pill-btn-secondary {
+  background-color: #F3F4F6;
+  color: #1F2937;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.saas-pill-btn-secondary:hover {
+  background-color: #EAEBED;
+}
+
+.saas-input {
+  width: 100%;
+  background-color: #F8F9FA;
+  font-size: 0.75rem;
+  color: #111827;
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  border-radius: 0.75rem;
+  padding: 0.625rem 0.875rem;
+  outline: none;
+  transition: all 0.15s ease;
+}
+
+.saas-input:hover {
+  background-color: #F2F3F5;
+}
+
+.saas-input:focus {
+  background-color: #FFFFFF;
+  border-color: #111827;
+  box-shadow: 0 0 0 2px rgba(17, 24, 39, 0.05);
+}
 
 /* React Bits BorderGlow Component Styles */
 .border-glow-wrapper {
