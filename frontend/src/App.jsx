@@ -373,6 +373,7 @@ function MainApp() {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [selectedInvoiceForPayment, setSelectedInvoiceForPayment] = useState(null);
   const [overdueCount, setOverdueCount] = useState(0);
+  const [isNavOpen, setIsNavOpen] = useState(false);
 
   // Fetch overdue invoice count for sidebar alert badge
   const fetchOverdueCount = async () => {
@@ -432,6 +433,8 @@ function MainApp() {
         onOpenRecordPayment={handleOpenRecordPayment}
         currentView={currentView}
         onSelectView={setCurrentView}
+        isMenuOpen={isNavOpen}
+        onToggleMenu={() => setIsNavOpen(!isNavOpen)}
       />
 
       {/* Main Body Shell */}
@@ -441,6 +444,8 @@ function MainApp() {
           currentView={currentView}
           onSelectView={setCurrentView}
           overdueCount={overdueCount}
+          isOpen={isNavOpen}
+          onToggleOpen={setIsNavOpen}
         />
 
         {/* View Content Area */}
