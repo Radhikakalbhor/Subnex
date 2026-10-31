@@ -4,30 +4,53 @@ const { initDb, query } = require('./config/db');
 const { initBillingCron } = require('./services/cronService');
 const bcrypt = require('bcrypt');
 
-async function ensureDefaultAdmin() {
+async function ensureDefaultSeedUsers() {
   try {
-    const adminEmail = process.env.DEFAULT_ADMIN_EMAIL || 'admin@subnex.io';
-    const adminPassword = process.env.DEFAULT_ADMIN_PASSWORD || 'Admin@Subnex2026!';
-    
-    const existing = await query('SELECT id FROM users WHERE email = $1', [adminEmail]);
-    if (existing.rows.length === 0) {
-      const hash = await bcrypt.hash(adminPassword, 10);
-      await query(
-        `INSERT INTO users (email, password_hash, full_name, role, is_active)
-         VALUES ($1, $2, 'SUBNEX System Admin', 'admin', TRUE)`,
-        [adminEmail, hash]
-      );
-      console.log(`[Bootstrap] Default admin user initialized: ${adminEmail}`);
+    const defaultUsers = [
+      {
+        email: process.env.DEFAULT_ADMIN_EMAIL || 'admin@subnex.io',
+        password: process.env.DEFAULT_ADMIN_PASSWORD || 'Admin@Subnex2026!',
+        full_name: 'SUBNEX System Admin',
+        role: 'admin',
+        company_name: 'SUBNEX HQ'
+      },
+      {
+        email: 'staff@subnex.io',
+        password: 'Staff@Subnex2026!',
+        full_name: 'Sarah Connor (Billing Ops)',
+        role: 'staff',
+        company_name: 'SUBNEX Operations'
+      },
+      {
+        email: 'customer@subnex.io',
+        password: 'Customer@Subnex2026!',
+        full_name: 'Acme Corp (Demo Customer)',
+        role: 'customer',
+        company_name: 'Acme Corporation'
+      }
+    ];
+
+    for (const u of defaultUsers) {
+      const existing = await query('SELECT id FROM users WHERE email = $1', [u.email]);
+      if (existing.rows.length === 0) {
+        const hash = await bcrypt.hash(u.password, 10);
+        await query(
+          `INSERT INTO users (email, password_hash, full_name, role, company_name, is_active)
+           VALUES ($1, $2, $3, $4, $5, TRUE)`,
+          [u.email, hash, u.full_name, u.role, u.company_name]
+        );
+        console.log(`[Bootstrap] Default ${u.role} user initialized: ${u.email}`);
+      }
     }
   } catch (err) {
-    console.warn('[Bootstrap] Notice while checking admin user:', err.message);
+    console.warn('[Bootstrap] Notice while seeding default demo users:', err.message);
   }
 }
 
 async function startServer() {
   try {
     await initDb();
-    await ensureDefaultAdmin();
+    await ensureDefaultSeedUsers();
 
     const server = app.listen(config.port, () => {
       console.log(`=======================================================`);
@@ -52,5 +75,8 @@ if (require.main === module) {
   startServer();
 }
 
-module.exports = { startServer, ensureDefaultAdmin };
-
+module.exports = {
+  startServer,
+  ensureDefaultAdmin: ensureDefaultSeedUsers,
+  ensureDefaultSeedUsers
+};

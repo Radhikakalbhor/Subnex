@@ -1,4 +1,5 @@
 const invoiceService = require('../services/invoiceService');
+const paymentService = require('../services/paymentService');
 
 async function getInvoice(req, res, next) {
   try {
@@ -16,6 +17,43 @@ async function getInvoice(req, res, next) {
 async function listInvoices(req, res, next) {
   try {
     const result = await invoiceService.listInvoices(req.query, req.user);
+    res.status(200).json({
+      status: 'success',
+      data: result,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function getOverdueInvoices(req, res, next) {
+  try {
+    const result = await invoiceService.getOverdueInvoices(req.query, req.user);
+    res.status(200).json({
+      status: 'success',
+      data: result,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function getOutstandingInvoices(req, res, next) {
+  try {
+    const result = await invoiceService.getOutstandingInvoices(req.query, req.user);
+    res.status(200).json({
+      status: 'success',
+      data: result,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function getInvoicePayments(req, res, next) {
+  try {
+    const { id } = req.params;
+    const result = await paymentService.getPaymentsByInvoiceId(id, req.user);
     res.status(200).json({
       status: 'success',
       data: result,
@@ -88,6 +126,9 @@ async function generateForSubscription(req, res, next) {
 module.exports = {
   getInvoice,
   listInvoices,
+  getOverdueInvoices,
+  getOutstandingInvoices,
+  getInvoicePayments,
   triggerBilling,
   updateStatus,
   generateForSubscription,

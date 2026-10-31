@@ -738,6 +738,24 @@ async function getInvoiceById(invoiceId, user) {
   );
   invoice.discount_applications = discRes.rows;
 
+  // Get payments history
+  const paymentsRes = await query(
+    `SELECT * FROM payments WHERE invoice_id = $1 ORDER BY payment_date ASC, created_at ASC`,
+    [invoiceId]
+  );
+  invoice.payments = paymentsRes.rows;
+
+  const now = new Date();
+  invoice.is_overdue = Boolean(
+    invoice.status !== 'paid' &&
+    invoice.status !== 'void' &&
+    invoice.status !== 'uncollectible' &&
+    Number(invoice.amount_remaining) > 0 &&
+    new Date(invoice.due_date) < now
+  );
+  invoice.outstanding_balance = round2(Number(invoice.amount_remaining));
+  invoice.total_paid = round2(Number(invoice.amount_paid));
+
   return invoice;
 }
 
@@ -763,9 +781,26 @@ async function listInvoices(filters = {}, user) {
     params.push(filters.subscription_id);
   }
 
-  if (filters.status) {
+  if (filters.status && filters.status !== 'overdue') {
     conditions.push(`i.status = $${paramIdx++}`);
     params.push(filters.status);
+  }
+
+  // Overdue filter: due_date < targetDate AND unpaid status
+  const isOverdueFilter = filters.is_overdue === true || filters.is_overdue === 'true' || filters.status === 'overdue';
+  if (isOverdueFilter) {
+    const targetDate = filters.asOfDate ? new Date(filters.asOfDate).toISOString() : new Date().toISOString();
+    conditions.push(`i.due_date < $${paramIdx++}`);
+    params.push(targetDate);
+    conditions.push(`i.status NOT IN ('paid', 'void', 'uncollectible')`);
+    conditions.push(`i.amount_remaining > 0`);
+  }
+
+  // Outstanding balance filter: unpaid status AND amount_remaining > 0
+  const isOutstandingFilter = filters.has_balance === true || filters.has_balance === 'true' || filters.outstanding === true || filters.outstanding === 'true';
+  if (isOutstandingFilter) {
+    conditions.push(`i.status NOT IN ('paid', 'void', 'uncollectible')`);
+    conditions.push(`i.amount_remaining > 0`);
   }
 
   const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
@@ -791,11 +826,67 @@ async function listInvoices(filters = {}, user) {
 
   const listRes = await query(sql, [...params, limit, offset]);
 
+  const now = filters.asOfDate ? new Date(filters.asOfDate) : new Date();
+  const enhancedInvoices = listRes.rows.map(inv => ({
+    ...inv,
+    is_overdue: Boolean(
+      inv.status !== 'paid' &&
+      inv.status !== 'void' &&
+      inv.status !== 'uncollectible' &&
+      Number(inv.amount_remaining) > 0 &&
+      new Date(inv.due_date) < now
+    ),
+    outstanding_balance: round2(Number(inv.amount_remaining)),
+    total_paid: round2(Number(inv.amount_paid)),
+  }));
+
   return {
     total,
     limit,
     offset,
-    invoices: listRes.rows,
+    invoices: enhancedInvoices,
+  };
+}
+
+/**
+ * Identify and retrieve overdue invoices
+ */
+async function getOverdueInvoices(filters = {}, user) {
+  const asOf = filters.asOfDate ? new Date(filters.asOfDate) : new Date();
+  const listResult = await listInvoices({ ...filters, is_overdue: true, asOfDate: asOf.toISOString() }, user);
+
+  let totalOverdueAmount = 0;
+  for (const inv of listResult.invoices) {
+    totalOverdueAmount = round2(totalOverdueAmount + Number(inv.amount_remaining));
+  }
+
+  return {
+    as_of_date: asOf.toISOString(),
+    overdue_count: listResult.total,
+    total_overdue_amount: totalOverdueAmount,
+    limit: listResult.limit,
+    offset: listResult.offset,
+    invoices: listResult.invoices,
+  };
+}
+
+/**
+ * Identify and retrieve invoices with outstanding balances
+ */
+async function getOutstandingInvoices(filters = {}, user) {
+  const listResult = await listInvoices({ ...filters, has_balance: true }, user);
+
+  let totalOutstandingAmount = 0;
+  for (const inv of listResult.invoices) {
+    totalOutstandingAmount = round2(totalOutstandingAmount + Number(inv.amount_remaining));
+  }
+
+  return {
+    total_count: listResult.total,
+    total_outstanding_amount: totalOutstandingAmount,
+    limit: listResult.limit,
+    offset: listResult.offset,
+    invoices: listResult.invoices,
   };
 }
 
@@ -856,6 +947,8 @@ module.exports = {
   processExpiredSubscriptions,
   getInvoiceById,
   listInvoices,
+  getOverdueInvoices,
+  getOutstandingInvoices,
   updateInvoiceStatus,
   ALLOWED_INVOICE_TRANSITIONS,
 };

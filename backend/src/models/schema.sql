@@ -62,7 +62,7 @@ EXCEPTION
 END $$;
 
 DO $$ BEGIN
-    CREATE TYPE payment_method_type AS ENUM ('credit_card', 'bank_transfer', 'upi', 'cash', 'manual');
+    CREATE TYPE payment_method_type AS ENUM ('credit_card', 'bank_transfer', 'upi', 'cash', 'manual', 'check', 'other');
 EXCEPTION
     WHEN duplicate_object THEN null;
 END $$;
@@ -386,7 +386,8 @@ CREATE TABLE IF NOT EXISTS payments (
     status payment_status NOT NULL DEFAULT 'pending',
     gateway_transaction_id VARCHAR(255),
     failure_reason TEXT,
-    payment_date TIMESTAMPTZ,
+    payment_date TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    notes TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -413,3 +414,15 @@ EXCEPTION
     WHEN duplicate_object THEN null;
 END $$;
 
+DO $$ BEGIN
+    ALTER TYPE payment_method_type ADD VALUE IF NOT EXISTS 'check';
+    ALTER TYPE payment_method_type ADD VALUE IF NOT EXISTS 'other';
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+    ALTER TABLE payments ADD COLUMN IF NOT EXISTS notes TEXT;
+EXCEPTION
+    WHEN duplicate_column THEN null;
+END $$;

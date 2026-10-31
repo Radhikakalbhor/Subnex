@@ -6,6 +6,18 @@ let transporter = null;
 async function getMailer() {
   if (transporter) return transporter;
 
+  // In test mode or when using dummy credentials, use offline jsonTransport
+  if (
+    process.env.NODE_ENV === 'test' ||
+    !config.email.user ||
+    config.email.user.includes('your_smtp')
+  ) {
+    transporter = nodemailer.createTransport({
+      jsonTransport: true,
+    });
+    return transporter;
+  }
+
   if (config.email.user && config.email.pass) {
     transporter = nodemailer.createTransport({
       host: config.email.host,
@@ -45,4 +57,3 @@ async function getMailer() {
 module.exports = {
   getMailer,
 };
-

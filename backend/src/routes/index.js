@@ -11,6 +11,8 @@ const discountRoutes = require('./discountRoutes');
 const quotationTemplateRoutes = require('./quotationTemplateRoutes');
 const subscriptionRoutes = require('./subscriptionRoutes');
 const invoiceRoutes = require('./invoiceRoutes');
+const paymentRoutes = require('./paymentRoutes');
+const dashboardRoutes = require('./dashboardRoutes');
 
 // API Health Check
 router.get('/health', (req, res) => {
@@ -33,5 +35,7 @@ router.use('/discounts', discountRoutes);
 router.use('/quotations', quotationTemplateRoutes);
 router.use('/subscriptions', subscriptionRoutes);
 router.use('/invoices', invoiceRoutes);
+router.use('/payments', paymentRoutes);
+router.use('/dashboard', dashboardRoutes);
 
 module.exports = router;

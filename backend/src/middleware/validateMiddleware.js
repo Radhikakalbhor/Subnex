@@ -351,6 +351,67 @@ function validateStatusTransition(req, res, next) {
   next();
 }
 
+const ALLOWED_PAYMENT_METHODS = ['credit_card', 'bank_transfer', 'upi', 'cash', 'manual', 'check', 'other'];
+
+function normalizePaymentMethod(method) {
+  if (!method || typeof method !== 'string') return null;
+  const m = method.toLowerCase().trim().replace(/[\s-]+/g, '_');
+  if (m === 'card' || m === 'debit_card') return 'credit_card';
+  if (m === 'wire' || m === 'bank') return 'bank_transfer';
+  if (m === 'cheque') return 'check';
+  return m;
+}
+
+function validatePaymentRecord(req, res, next) {
+  const { invoice_id, invoiceId, payment_method, paymentMethod, amount, payment_date, paymentDate, note, notes } = req.body;
+  const errors = [];
+
+  const effectiveInvoiceId = invoice_id || invoiceId;
+  if (!effectiveInvoiceId || typeof effectiveInvoiceId !== 'string' || effectiveInvoiceId.trim().length === 0) {
+    errors.push('Invoice ID (invoice_id) is required.');
+  }
+
+  const rawMethod = payment_method || paymentMethod;
+  if (!rawMethod || typeof rawMethod !== 'string') {
+    errors.push(`Payment method (payment_method) is required. Allowed: [${ALLOWED_PAYMENT_METHODS.join(', ')}].`);
+  } else {
+    const normMethod = normalizePaymentMethod(rawMethod);
+    if (!ALLOWED_PAYMENT_METHODS.includes(normMethod)) {
+      errors.push(`Invalid payment method '${rawMethod}'. Allowed methods: [${ALLOWED_PAYMENT_METHODS.join(', ')}].`);
+    } else {
+      req.body.payment_method = normMethod;
+    }
+  }
+
+  if (amount === undefined || amount === null || amount === '') {
+    errors.push('Payment amount is required.');
+  } else {
+    const num = Number(amount);
+    if (isNaN(num) || num <= 0) {
+      errors.push('Payment amount must be a number greater than zero.');
+    }
+  }
+
+  const rawDate = payment_date || paymentDate;
+  if (rawDate !== undefined && rawDate !== null && rawDate !== '') {
+    const d = new Date(rawDate);
+    if (isNaN(d.getTime())) {
+      errors.push('Invalid payment date format.');
+    }
+  }
+
+  const rawNote = note || notes;
+  if (rawNote !== undefined && rawNote !== null && typeof rawNote !== 'string') {
+    errors.push('Note must be a string.');
+  }
+
+  if (errors.length > 0) {
+    return errorResponse(res, 400, 'Validation failed.', errors);
+  }
+
+  next();
+}
+
 module.exports = {
   isValidEmail,
   validateSignup,
@@ -367,5 +428,7 @@ module.exports = {
   validateSubscription,
   validateQuotation,
   validateStatusTransition,
+  validatePaymentRecord,
+  normalizePaymentMethod,
+  ALLOWED_PAYMENT_METHODS,
 };
-

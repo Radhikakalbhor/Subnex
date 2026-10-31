@@ -29,7 +29,7 @@ function initPgMemDb(isTestMode = false) {
     CREATE TYPE discount_type_enum AS ENUM ('percentage', 'fixed_amount');
     CREATE TYPE discount_target_scope AS ENUM ('subscription', 'plan', 'invoice', 'product');
     CREATE TYPE invoice_status AS ENUM ('draft', 'confirmed', 'paid', 'open', 'void', 'uncollectible');
-    CREATE TYPE payment_method_type AS ENUM ('credit_card', 'bank_transfer', 'upi', 'cash', 'manual');
+    CREATE TYPE payment_method_type AS ENUM ('credit_card', 'bank_transfer', 'upi', 'cash', 'manual', 'check', 'other');
     CREATE TYPE payment_status AS ENUM ('pending', 'successful', 'failed', 'refunded');
   `);
 
