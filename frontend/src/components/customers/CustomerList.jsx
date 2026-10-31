@@ -4,6 +4,7 @@ import { RoleBadge } from '../common/Badge';
 import { CopyConfirm } from '../watermelon/CopyConfirm';
 import LoadingSpinner from '../common/LoadingSpinner';
 import EmptyState from '../common/EmptyState';
+import BorderGlow from '../common/BorderGlow';
 import { formatDate } from '../../utils/formatters';
 import { Users, Search, RefreshCw, Building } from 'lucide-react';
 
@@ -44,43 +45,67 @@ export default function CustomerList({ onSelectCustomer }) {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="saas-card p-6 sm:p-7">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-5 border-b border-black/[0.05]">
-          <div>
-            <h1 className="text-xl sm:text-2xl font-bold text-neutral-900 tracking-tight flex items-center">
-              <div className="w-7 h-7 rounded-full bg-[#F5F6F8] flex items-center justify-center mr-2.5 text-neutral-800">
-                <Users className="w-4 h-4" strokeWidth={1.75} />
-              </div>
-              Customer & User Registry
-            </h1>
-            <p className="text-xs text-neutral-500 mt-1 font-normal">
-              Verified subscriber accounts, company details and role authorization levels.
-            </p>
+      <BorderGlow
+        edgeSensitivity={30}
+        glowColor="40 80 80"
+        backgroundColor="#FFFFFF"
+        borderRadius={22}
+        glowRadius={40}
+        glowIntensity={1}
+        coneSpread={25}
+        animated={false}
+        colors={['#c084fc', '#f472b6', '#38bdf8']}
+        className="border border-black/[0.06] shadow-[0_2px_12px_rgba(0,0,0,0.02)]"
+      >
+        <div className="p-6 sm:p-7">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-5 border-b border-black/[0.05]">
+            <div>
+              <h1 className="text-xl sm:text-2xl font-bold text-neutral-900 tracking-tight flex items-center">
+                <div className="w-7 h-7 rounded-full bg-[#F5F6F8] flex items-center justify-center mr-2.5 text-neutral-800">
+                  <Users className="w-4 h-4" strokeWidth={1.75} />
+                </div>
+                Customer & User Registry
+              </h1>
+              <p className="text-xs text-neutral-500 mt-1 font-normal">
+                Verified subscriber accounts, company details and role authorization levels.
+              </p>
+            </div>
+            <button
+              onClick={fetchUsers}
+              className="self-start sm:self-auto inline-flex items-center px-3.5 py-1.5 text-xs font-medium text-neutral-800 bg-[#F5F6F8] hover:bg-[#EAEBED] rounded-full border border-black/[0.04] transition-all"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 mr-1.5 ${loading ? 'animate-spin' : ''}`} strokeWidth={1.75} />
+              Refresh
+            </button>
           </div>
-          <button
-            onClick={fetchUsers}
-            className="self-start sm:self-auto inline-flex items-center px-3.5 py-1.5 text-xs font-medium text-neutral-800 bg-[#F5F6F8] hover:bg-[#EAEBED] rounded-full border border-black/[0.04] transition-all"
-          >
-            <RefreshCw className={`w-3.5 h-3.5 mr-1.5 ${loading ? 'animate-spin' : ''}`} strokeWidth={1.75} />
-            Refresh
-          </button>
-        </div>
 
-        {/* Search */}
-        <div className="pt-5 max-w-md relative">
-          <Search className="w-4 h-4 text-neutral-400 absolute left-3.5 top-3" strokeWidth={1.75} />
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search customer by name, organization, email..."
-            className="saas-input pl-10"
-          />
+          {/* Search */}
+          <div className="pt-5 max-w-md relative">
+            <Search className="w-4 h-4 text-neutral-400 absolute left-3.5 top-3" strokeWidth={1.75} />
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search customer by name, organization, email..."
+              className="saas-input pl-10"
+            />
+          </div>
         </div>
-      </div>
+      </BorderGlow>
 
       {/* Users Grid */}
-      <div className="saas-card overflow-hidden">
+      <BorderGlow
+        edgeSensitivity={30}
+        glowColor="40 80 80"
+        backgroundColor="#FFFFFF"
+        borderRadius={22}
+        glowRadius={40}
+        glowIntensity={1}
+        coneSpread={25}
+        animated={false}
+        colors={['#c084fc', '#f472b6', '#38bdf8']}
+        className="border border-black/[0.06] shadow-[0_2px_12px_rgba(0,0,0,0.02)] overflow-hidden"
+      >
         {loading ? (
           <LoadingSpinner message="Fetching user directory..." />
         ) : filteredUsers.length === 0 ? (
@@ -137,7 +162,7 @@ export default function CustomerList({ onSelectCustomer }) {
             </table>
           </div>
         )}
-      </div>
+      </BorderGlow>
     </div>
   );
 }

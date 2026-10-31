@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
 import StatCard from '../common/StatCard';
+import BorderGlow from '../common/BorderGlow';
 import LoadingSpinner from '../common/LoadingSpinner';
 import { StatusBadge } from '../common/Badge';
 import { CreditUsageCard } from '../watermelon/CreditUsageCard';

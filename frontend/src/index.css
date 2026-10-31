@@ -65,3 +65,70 @@
     @apply w-full bg-[#F8F9FA] hover:bg-[#F2F3F5] focus:bg-white text-xs text-neutral-900 placeholder:text-neutral-400 border border-black/[0.07] focus:border-neutral-900 rounded-xl px-3.5 py-2.5 outline-none transition-all duration-150 focus:ring-2 focus:ring-neutral-900/5;
   }
 }
+
+
+/* React Bits BorderGlow Component Styles */
+.border-glow-wrapper {
+  position: relative;
+  border-radius: var(--border-radius, 28px);
+  background-color: var(--bg-color, #FFFFFF);
+  padding: 1.5px;
+  isolation: isolate;
+  transition: box-shadow 0.2s ease;
+}
+
+.border-glow-effect {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: conic-gradient(
+    from var(--glow-angle, 0deg) at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    var(--color-1, #c084fc) 0deg,
+    var(--color-2, #f472b6) calc(var(--cone-spread, 25deg) / 2),
+    var(--color-3, #38bdf8) var(--cone-spread, 25deg),
+    transparent calc(var(--cone-spread, 25deg) * 1.5),
+    transparent 360deg
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: var(--edge-intensity, 0);
+  transition: opacity 0.2s ease-out;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.border-glow-ambient {
+  position: absolute;
+  inset: calc(var(--glow-radius, 40px) * -1);
+  background: radial-gradient(
+    circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    hsl(var(--glow-color, 40 80 80) / calc(var(--edge-intensity, 0) * 0.25)),
+    transparent 70%
+  );
+  border-radius: inherit;
+  z-index: -1;
+  pointer-events: none;
+  opacity: var(--edge-intensity, 0);
+  transition: opacity 0.2s ease-out;
+}
+
+.border-glow-content {
+  position: relative;
+  border-radius: calc(var(--border-radius, 28px) - 1.5px);
+  background-color: var(--bg-color, #FFFFFF);
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+}
+
+.border-glow-animated .border-glow-effect {
+  animation: borderGlowIntro 1.5s ease-in-out forwards;
+}
+
+@keyframes borderGlowIntro {
+  0% { --edge-intensity: 0.8; --glow-angle: 0deg; }
+  50% { --edge-intensity: 0.8; --glow-angle: 180deg; }
+  100% { --edge-intensity: 0; --glow-angle: 360deg; }
+}

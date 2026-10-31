@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Navbar from './components/layout/Navbar';
+import BorderGlow from './components/common/BorderGlow';
 import Sidebar from './components/layout/Sidebar';
 import AdminDashboard from './components/dashboard/AdminDashboard';
 import CustomerPortal from './components/dashboard/CustomerPortal';

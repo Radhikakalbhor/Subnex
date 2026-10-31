@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import GooeyNav from '../watermelon/GooeyNav';
 import {
   LayoutGrid,
   Layers,
@@ -184,7 +183,7 @@ export default function Sidebar({
               stiffness: 420,
               damping: 30,
             }}
-            className="fixed top-[68px] left-4 sm:left-6 md:left-8 w-[285px] bg-[#F6F7F9] border border-black/[0.08] rounded-[26px] p-4 shadow-[0_20px_50px_rgba(0,0,0,0.15),0_2px_8px_rgba(0,0,0,0.04)] backdrop-blur-xl z-50 flex flex-col justify-between max-h-[calc(100vh-5.5rem)] overflow-y-auto"
+            className="fixed top-[68px] left-4 sm:left-6 md:left-8 w-[280px] bg-[#F6F7F9] border border-black/[0.08] rounded-[26px] p-4 shadow-[0_20px_50px_rgba(0,0,0,0.15),0_2px_8px_rgba(0,0,0,0.04)] backdrop-blur-xl z-50 flex flex-col justify-between max-h-[calc(100vh-5.5rem)] overflow-y-auto"
           >
             <div>
               {/* Header with Title & Pin / Close controls */}
@@ -228,55 +227,49 @@ export default function Sidebar({
                 {getSectionTitle()}
               </div>
 
-              {/* GooeyNav Animated Liquid Particle Navigation */}
-              <GooeyNav
-                items={allowedItems}
-                activeId={currentView}
-                theme="dark"
-                size="md"
-                frame={false}
-                particleCount={15}
-                spread={56}
-                animationTime={600}
-                timeVariance={300}
-                gooeyness={0.5}
-                wobble={0.5}
-                hoverEffect
-                onChange={(index, item) => {
-                  onSelectView(item.id);
-                  if (!isPinned) setIsOpen(false);
-                }}
-                renderItem={(item, isActive) => (
-                  <div
-                    className={`w-full flex items-center justify-between transition-all duration-150 rounded-[22px] text-left cursor-pointer ${
-                      isActive
-                        ? 'text-white px-3.5 py-3'
-                        : 'text-neutral-800 hover:text-neutral-950 px-3.5 py-2.5 hover:bg-black/[0.035]'
-                    }`}
-                  >
-                    <div className="flex items-center space-x-3.5 min-w-0">
-                      {renderIcon(item.iconName, isActive)}
-                      <span
-                        className={`text-sm tracking-tight truncate ${
-                          isActive ? 'text-white font-bold' : 'text-neutral-900 font-semibold'
-                        }`}
-                      >
-                        {item.label}
-                      </span>
-                    </div>
+              {/* Exact Navigation Chart Items from reference screenshot */}
+              <nav className="space-y-2">
+                {allowedItems.map((item) => {
+                  const isActive = currentView === item.id;
+                  return (
+                    <motion.button
+                      key={item.id}
+                      whileHover={{ x: isActive ? 0 : 2 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => {
+                        onSelectView(item.id);
+                        if (!isPinned) setIsOpen(false);
+                      }}
+                      className={`w-full flex items-center justify-between transition-all duration-150 rounded-[22px] text-left group cursor-pointer ${
+                        isActive
+                          ? 'bg-[#121316] text-white shadow-[0_4px_16px_rgba(0,0,0,0.14)] px-3.5 py-3'
+                          : 'text-neutral-800 hover:text-neutral-950 hover:bg-black/[0.035] px-3.5 py-2.5'
+                      }`}
+                    >
+                      <div className="flex items-center space-x-3.5 min-w-0">
+                        {renderIcon(item.iconName, isActive)}
+                        <span
+                          className={`text-sm tracking-tight truncate ${
+                            isActive ? 'text-white font-bold' : 'text-neutral-900 font-semibold'
+                          }`}
+                        >
+                          {item.label}
+                        </span>
+                      </div>
 
-                    {item.badge && (
-                      <span
-                        className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ml-2 flex-shrink-0 ${
-                          item.badgeColor || 'bg-rose-500 text-white'
-                        }`}
-                      >
-                        {item.badge}
-                      </span>
-                    )}
-                  </div>
-                )}
-              />
+                      {item.badge && (
+                        <span
+                          className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ml-2 flex-shrink-0 ${
+                            item.badgeColor || 'bg-rose-500 text-white'
+                          }`}
+                        >
+                          {item.badge}
+                        </span>
+                      )}
+                    </motion.button>
+                  );
+                })}
+              </nav>
 
               {/* Access Level / Permissions Card */}
               <div className="mt-4 bg-white rounded-[20px] p-3.5 border border-black/[0.05] shadow-[0_2px_8px_rgba(0,0,0,0.02)] text-xs">
@@ -319,6 +312,14 @@ export default function Sidebar({
                 >
                   <LogOut className="w-3.5 h-3.5" strokeWidth={1.75} />
                 </button>
+              </div>
+
+              <div className="flex items-center justify-between text-[10px] text-neutral-400 font-medium px-2 pt-2.5">
+                <span className="flex items-center">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 animate-pulse" />
+                  Live Engine
+                </span>
+                <span className="font-mono text-[9px] text-neutral-400">v1.0.0</span>
               </div>
             </div>
           </motion.aside>

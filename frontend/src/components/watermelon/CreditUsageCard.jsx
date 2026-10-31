@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Download, RefreshCw, Layers } from 'lucide-react';
 import { formatCurrency } from '../../utils/formatters';
+import BorderGlow from '../common/BorderGlow';
 
 export function CreditUsageCard({
   title = 'Revenue Realization & Invoiced Collection',
@@ -39,125 +40,136 @@ export function CreditUsageCard({
   };
 
   return (
-    <div className="w-full rounded-[24px] border border-black/[0.06] bg-white p-5 sm:p-6 shadow-[0_2px_12px_rgba(0,0,0,0.02)] transition-all duration-300">
-      {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-4 border-b border-black/[0.05]">
-        <div>
-          <span className="text-[11px] font-semibold tracking-wider text-neutral-400 uppercase block mb-1">
-            {title}
-          </span>
-          <div className="flex items-baseline space-x-2">
-            <span className="text-3xl font-bold text-neutral-900 tracking-tight">
-              {percent}%
+    <BorderGlow
+      edgeSensitivity={30}
+      glowColor="40 80 80"
+      backgroundColor="#FFFFFF"
+      borderRadius={24}
+      glowRadius={40}
+      glowIntensity={1}
+      coneSpread={25}
+      animated={false}
+      colors={['#c084fc', '#f472b6', '#38bdf8']}
+      className="w-full border border-black/[0.06] shadow-[0_2px_12px_rgba(0,0,0,0.02)]"
+    >
+      <div className="p-5 sm:p-6 transition-all duration-300">
+        {/* Top Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-4 border-b border-black/[0.05]">
+          <div>
+            <span className="text-[11px] font-semibold tracking-wider text-neutral-400 uppercase block mb-1">
+              {title}
             </span>
-            <span className="text-xs font-medium text-emerald-700 bg-emerald-500/[0.1] px-2 py-0.5 rounded-full border border-emerald-500/20">
-              Realized
+            <div className="flex items-baseline space-x-2">
+              <span className="text-3xl font-bold text-neutral-900 tracking-tight">
+                {percent}%
+              </span>
+              <span className="text-xs font-medium text-emerald-700 bg-emerald-500/[0.1] px-2 py-0.5 rounded-full border border-emerald-500/20">
+                Realized
+              </span>
+            </div>
+          </div>
+
+          {/* Auto-reconcile toggle */}
+          <div className="flex items-center gap-2 self-start sm:self-auto bg-[#F8F9FA] px-3 py-1.5 rounded-full border border-black/[0.04]">
+            <span className="text-xs font-medium text-neutral-600">Auto-Reconcile</span>
+            <button
+              type="button"
+              onClick={() => setAutoReconcile(!autoReconcile)}
+              className={`relative inline-flex h-4 w-7 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                autoReconcile ? 'bg-neutral-900' : 'bg-neutral-300'
+              }`}
+            >
+              <span
+                className={`pointer-events-none inline-block h-3 w-3 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                  autoReconcile ? 'translate-x-3' : 'translate-x-0'
+                }`}
+              />
+            </button>
+          </div>
+        </div>
+
+        {/* 60-segment LED Meter */}
+        <div className="my-5">
+          <div className="flex items-center justify-between text-[11px] text-neutral-400 mb-2 font-medium">
+            <span>Collected: {formatCurrency(collected)}</span>
+            <span>Target: {formatCurrency(total)}</span>
+          </div>
+
+          <div className="grid grid-flow-col auto-cols-fr gap-[3px] h-6 bg-[#F5F6F8] p-1 rounded-xl border border-black/[0.04]">
+            {Array.from({ length: segments }).map((_, idx) => {
+              const isActive = idx < activeSegments;
+              return (
+                <div
+                  key={idx}
+                  className={`h-full rounded-[2px] transition-all duration-300 ${
+                    isActive
+                      ? 'bg-neutral-900 shadow-[0_0_6px_rgba(0,0,0,0.25)]'
+                      : 'bg-neutral-200/60'
+                  }`}
+                />
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Financial Metrics Strip */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3 border-t border-black/[0.05]">
+          <div className="bg-[#F8F9FA] rounded-[16px] p-3 border border-black/[0.03]">
+            <span className="text-[10px] uppercase tracking-wider font-semibold text-neutral-400 block mb-0.5">
+              Reconciled Total
+            </span>
+            <span className="text-base font-bold text-neutral-900">
+              {formatCurrency(collected)}
+            </span>
+          </div>
+          <div className="bg-[#F8F9FA] rounded-[16px] p-3 border border-black/[0.03]">
+            <span className="text-[10px] uppercase tracking-wider font-semibold text-neutral-400 block mb-0.5">
+              Invoiced Total
+            </span>
+            <span className="text-base font-bold text-neutral-900">
+              {formatCurrency(total)}
+            </span>
+          </div>
+          <div className="bg-[#F8F9FA] rounded-[16px] p-3 border border-black/[0.03]">
+            <span className="text-[10px] uppercase tracking-wider font-semibold text-neutral-400 block mb-0.5">
+              Outstanding Due
+            </span>
+            <span className="text-base font-bold text-rose-600">
+              {formatCurrency(outstandingAmount)}
             </span>
           </div>
         </div>
 
-        {/* Auto-reconcile toggle */}
-        <div className="flex items-center gap-2 self-start sm:self-auto bg-[#F8F9FA] px-3 py-1.5 rounded-full border border-black/[0.04]">
-          <span className="text-[11px] font-medium text-neutral-500">
-            Auto-reconcile invoices
-          </span>
+        {/* Footer controls */}
+        <div className="mt-4 pt-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+          <div className="flex items-center gap-1.5">
+            {['7 Days', '30 Days', '90 Days', 'All Time'].map((p) => (
+              <button
+                key={p}
+                onClick={() => setSelectedPeriod(p)}
+                className={`px-2.5 py-1 text-[10px] font-medium rounded-full transition-all ${
+                  selectedPeriod === p
+                    ? 'bg-neutral-900 text-white'
+                    : 'bg-[#F5F6F8] text-neutral-600 hover:text-neutral-900'
+                }`}
+              >
+                {p}
+              </button>
+            ))}
+          </div>
+
           <button
             type="button"
-            title="Toggle auto-reconciliation"
-            onClick={() => setAutoReconcile(!autoReconcile)}
-            className={`relative flex h-5 w-9 shrink-0 items-center rounded-full p-0.5 transition-colors duration-200 ${
-              autoReconcile ? 'bg-neutral-900' : 'bg-neutral-300'
-            }`}
+            onClick={handleDownload}
+            className="inline-flex items-center px-3 py-1.5 text-[11px] font-medium text-neutral-800 bg-[#F5F6F8] hover:bg-[#EAEBED] rounded-full border border-black/[0.04] transition-all"
           >
-            <motion.div
-              animate={{ x: autoReconcile ? 16 : 0 }}
-              transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-              className="h-4 w-4 bg-white rounded-full shadow-xs"
-            />
+            <Download className={`w-3.5 h-3.5 mr-1.5 ${downloadDone ? 'text-emerald-600' : ''}`} />
+            <span>{downloadDone ? 'Exported!' : 'Export CSV'}</span>
           </button>
         </div>
       </div>
-
-      {/* Segmented Ticks Visualizer */}
-      <div className="py-5">
-        <div className="flex items-center justify-between text-xs font-semibold text-neutral-700 mb-2">
-          <span>Settled: {formatCurrency(collected)}</span>
-          <span className="text-neutral-400">Target: {formatCurrency(total)}</span>
-        </div>
-
-        <div className="flex items-center gap-[2.5px] overflow-hidden py-1">
-          {Array.from({ length: segments }).map((_, i) => {
-            const isActive = i < activeSegments;
-            return (
-              <div
-                key={i}
-                className={`h-5 flex-1 rounded-[2px] transition-all duration-300 ${
-                  isActive
-                    ? 'bg-neutral-900'
-                    : 'bg-[#EAEBED]'
-                }`}
-              />
-            );
-          })}
-        </div>
-
-        <div className="flex justify-between items-center text-[11px] text-neutral-400 mt-2 font-medium">
-          <span>0%</span>
-          <span>50%</span>
-          <span>100%</span>
-        </div>
-      </div>
-
-      {/* Breakdown metrics */}
-      <div className="grid grid-cols-2 gap-3 pt-4 border-t border-black/[0.05]">
-        <div className="p-3.5 rounded-[16px] bg-[#F8F9FA] border border-black/[0.03]">
-          <span className="text-[10px] font-semibold text-neutral-400 uppercase tracking-wider block mb-1">
-            Collections Realized
-          </span>
-          <span className="text-base font-bold text-emerald-700">
-            {formatCurrency(collected)}
-          </span>
-        </div>
-
-        <div className="p-3.5 rounded-[16px] bg-[#F8F9FA] border border-black/[0.03]">
-          <span className="text-[10px] font-semibold text-neutral-400 uppercase tracking-wider block mb-1">
-            Outstanding Due
-          </span>
-          <span className="text-base font-bold text-rose-600">
-            {formatCurrency(outstandingAmount)}
-          </span>
-        </div>
-      </div>
-
-      {/* Footer with CSV Export */}
-      <div className="mt-4 pt-3.5 border-t border-black/[0.05] flex items-center justify-between">
-        <div className="flex items-center gap-1.5">
-          {['7 Days', '30 Days', '90 Days'].map((p) => (
-            <button
-              key={p}
-              type="button"
-              onClick={() => setSelectedPeriod(p)}
-              className={`px-2.5 py-1 text-[10px] font-medium rounded-full transition-all ${
-                selectedPeriod === p
-                  ? 'bg-neutral-900 text-white'
-                  : 'bg-[#F5F6F8] text-neutral-600 hover:text-neutral-900'
-              }`}
-            >
-              {p}
-            </button>
-          ))}
-        </div>
-
-        <button
-          type="button"
-          onClick={handleDownload}
-          className="inline-flex items-center px-3 py-1.5 text-[11px] font-medium text-neutral-800 bg-[#F5F6F8] hover:bg-[#EAEBED] rounded-full border border-black/[0.04] transition-all"
-        >
-          <Download className={`w-3.5 h-3.5 mr-1.5 ${downloadDone ? 'text-emerald-600' : ''}`} />
-          <span>{downloadDone ? 'Exported!' : 'Export CSV'}</span>
-        </button>
-      </div>
-    </div>
+    </BorderGlow>
   );
 }
 
+export default CreditUsageCard;
