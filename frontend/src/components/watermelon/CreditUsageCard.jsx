@@ -75,14 +75,12 @@ export function CreditUsageCard({
             <button
               type="button"
               onClick={() => setAutoReconcile(!autoReconcile)}
-              className={`relative inline-flex h-4 w-7 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-                autoReconcile ? 'bg-neutral-900' : 'bg-neutral-300'
-              }`}
+              className={`relative inline-flex h-4 w-7 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${autoReconcile ? 'bg-neutral-900' : 'bg-neutral-300'
+                }`}
             >
               <span
-                className={`pointer-events-none inline-block h-3 w-3 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                  autoReconcile ? 'translate-x-3' : 'translate-x-0'
-                }`}
+                className={`pointer-events-none inline-block h-3 w-3 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${autoReconcile ? 'translate-x-3' : 'translate-x-0'
+                  }`}
               />
             </button>
           </div>
@@ -101,11 +99,10 @@ export function CreditUsageCard({
               return (
                 <div
                   key={idx}
-                  className={`h-full rounded-[2px] transition-all duration-300 ${
-                    isActive
+                  className={`h-full rounded-[2px] transition-all duration-300 ${isActive
                       ? 'bg-neutral-900 shadow-[0_0_6px_rgba(0,0,0,0.25)]'
                       : 'bg-neutral-200/60'
-                  }`}
+                    }`}
                 />
               );
             })}
@@ -147,11 +144,10 @@ export function CreditUsageCard({
               <button
                 key={p}
                 onClick={() => setSelectedPeriod(p)}
-                className={`px-2.5 py-1 text-[10px] font-medium rounded-full transition-all ${
-                  selectedPeriod === p
+                className={`px-2.5 py-1 text-[10px] font-medium rounded-full transition-all ${selectedPeriod === p
                     ? 'bg-neutral-900 text-white'
                     : 'bg-[#F5F6F8] text-neutral-600 hover:text-neutral-900'
-                }`}
+                  }`}
               >
                 {p}
               </button>
