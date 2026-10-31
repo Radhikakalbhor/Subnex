@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Navbar from './components/layout/Navbar';
 import BorderGlow from './components/common/BorderGlow';
+import GradientWaves from './components/common/GradientWaves';
 import Sidebar from './components/layout/Sidebar';
 import AdminDashboard from './components/dashboard/AdminDashboard';
 import CustomerPortal from './components/dashboard/CustomerPortal';
@@ -94,7 +95,7 @@ function AuthScreen() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F6F8] text-neutral-900 flex flex-col justify-center items-center p-4 sm:p-6">
+    <div className="min-h-screen text-neutral-900 flex flex-col justify-center items-center p-4 sm:p-6">
       <div className="w-full max-w-xl relative z-10">
         {/* Brand Header */}
         <div className="text-center mb-8">
@@ -428,7 +429,7 @@ function MainApp() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F6F8] text-neutral-900 flex flex-col font-sans antialiased">
+    <div className="min-h-screen text-neutral-900 flex flex-col font-sans antialiased">
       {/* Top Navigation */}
       <Navbar
         onOpenRecordPayment={handleOpenRecordPayment}
@@ -500,7 +501,30 @@ function MainApp() {
 export default function App() {
   return (
     <AuthProvider>
-      <MainApp />
+      <div className="relative min-h-screen text-neutral-900 overflow-x-hidden">
+        {/* Common Ambient GradientWaves Background from React Bits */}
+        <div className="fixed inset-0 z-0 pointer-events-auto">
+          <GradientWaves
+            horizonColor="#3b82f6"
+            waveColor="#ffffff"
+            crestColor="#FFFFFF"
+            speed={0.35}
+            amplitude={2.5}
+            relief={1}
+            lightAngle={120}
+            mouseInteraction
+            swellOnClick
+            opacity={0.85}
+          />
+          {/* Downside white overlay to keep the white thing over the blue waves */}
+          <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent via-[#F5F6F8]/50 to-[#F5F6F8]/90" />
+        </div>
+
+        {/* Foreground Content */}
+        <div className="relative z-10">
+          <MainApp />
+        </div>
+      </div>
     </AuthProvider>
   );
 }
