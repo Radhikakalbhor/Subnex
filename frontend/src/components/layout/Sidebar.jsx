@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { MenuButton } from './MenuButton';
 import {
   LayoutGrid,
   Layers,
@@ -11,6 +10,7 @@ import {
   LogOut,
   Pin,
   PinOff,
+  X,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -32,7 +32,7 @@ export default function Sidebar({
   const isOpen = controlledIsOpen !== undefined ? controlledIsOpen : internalIsOpen;
   const setIsOpen = controlledOnToggleOpen !== undefined ? controlledOnToggleOpen : setInternalIsOpen;
 
-  // Handle clicking outside to shrink back into Menu button when not pinned
+  // Handle clicking outside to shrink back when not pinned
   useEffect(() => {
     function handleClickOutside(event) {
       if (
@@ -41,7 +41,11 @@ export default function Sidebar({
         sidebarRef.current &&
         !sidebarRef.current.contains(event.target)
       ) {
-        setIsOpen(false);
+        // Check if event target was the navbar menu button to avoid toggle race
+        const isMenuBtn = event.target.closest('button[aria-label="Collapse navigation"], button[aria-label="Expand navigation"]');
+        if (!isMenuBtn) {
+          setIsOpen(false);
+        }
       }
     }
 
@@ -52,19 +56,15 @@ export default function Sidebar({
     };
   }, [isOpen, isPinned, setIsOpen]);
 
-  // Hover expand trigger with debounce
   const handleMouseEnter = () => {
     if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
-    if (!isOpen) {
-      setIsOpen(true);
-    }
   };
 
   const handleMouseLeave = () => {
     if (!isPinned) {
       hoverTimeoutRef.current = setTimeout(() => {
         setIsOpen(false);
-      }, 350);
+      }, 400);
     }
   };
 
@@ -168,57 +168,58 @@ export default function Sidebar({
       ref={sidebarRef}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className="relative z-30 flex-shrink-0"
+      className="relative z-40"
     >
-      {/* Collapsed State: Shrunk into the exact sleek [ = Menu ] pill button */}
-      <div className="p-3 sm:p-4">
-        <MenuButton
-          isOpen={isOpen}
-          onClick={toggleOpen}
-          onMouseEnter={handleMouseEnter}
-          className="shadow-[0_4px_18px_rgba(0,0,0,0.15)]"
-        />
-      </div>
-
       {/* Expandable Navigation Chart (Image 2) */}
       <AnimatePresence>
         {isOpen && (
           <motion.aside
             key="navigation-chart"
-            initial={{ opacity: 0, scale: 0.96, x: -10, y: -6 }}
-            animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, x: -8, y: -4 }}
+            initial={{ opacity: 0, scale: 0.96, y: -8 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: -6 }}
             transition={{
               type: 'spring',
-              stiffness: 400,
-              damping: 32,
+              stiffness: 420,
+              damping: 30,
             }}
-            className="absolute top-3 left-3 w-[275px] bg-[#F6F7F9] border border-black/[0.08] rounded-[26px] p-4 shadow-[0_16px_48px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.04)] backdrop-blur-xl z-50 flex flex-col justify-between max-h-[calc(100vh-6rem)] overflow-y-auto"
+            className="fixed top-[68px] left-4 sm:left-6 md:left-8 w-[280px] bg-[#F6F7F9] border border-black/[0.08] rounded-[26px] p-4 shadow-[0_20px_50px_rgba(0,0,0,0.15),0_2px_8px_rgba(0,0,0,0.04)] backdrop-blur-xl z-50 flex flex-col justify-between max-h-[calc(100vh-5.5rem)] overflow-y-auto"
           >
             <div>
-              {/* Header with Menu Button & Pin / Close controls */}
-              <div className="flex items-center justify-between pb-3.5 mb-2 border-b border-black/[0.05]">
-                <MenuButton
-                  isOpen={true}
-                  onClick={toggleOpen}
-                  className="py-1.5 px-3 text-[11px]"
-                />
-                <button
-                  type="button"
-                  onClick={() => setIsPinned(!isPinned)}
-                  className={`p-1.5 rounded-full transition-colors ${
-                    isPinned
-                      ? 'bg-neutral-900 text-white'
-                      : 'text-neutral-400 hover:text-neutral-900 hover:bg-black/[0.05]'
-                  }`}
-                  title={isPinned ? 'Unpin sidebar' : 'Pin sidebar open'}
-                >
-                  {isPinned ? (
-                    <Pin className="w-3.5 h-3.5" strokeWidth={2} />
-                  ) : (
-                    <PinOff className="w-3.5 h-3.5" strokeWidth={2} />
-                  )}
-                </button>
+              {/* Header with Title & Pin / Close controls */}
+              <div className="flex items-center justify-between pb-3 mb-2 border-b border-black/[0.05]">
+                <div className="flex items-center space-x-2">
+                  <div className="bg-neutral-900 text-white font-bold text-xs rounded-lg w-6 h-6 flex items-center justify-center">
+                    SX
+                  </div>
+                  <span className="text-xs font-bold text-neutral-900 tracking-tight">Navigation</span>
+                </div>
+                <div className="flex items-center space-x-1">
+                  <button
+                    type="button"
+                    onClick={() => setIsPinned(!isPinned)}
+                    className={`p-1.5 rounded-full transition-colors ${
+                      isPinned
+                        ? 'bg-neutral-900 text-white'
+                        : 'text-neutral-400 hover:text-neutral-900 hover:bg-black/[0.05]'
+                    }`}
+                    title={isPinned ? 'Unpin navigation' : 'Pin navigation open'}
+                  >
+                    {isPinned ? (
+                      <Pin className="w-3.5 h-3.5" strokeWidth={2} />
+                    ) : (
+                      <PinOff className="w-3.5 h-3.5" strokeWidth={2} />
+                    )}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsOpen(false)}
+                    className="p-1.5 rounded-full text-neutral-400 hover:text-neutral-900 hover:bg-black/[0.05] transition-colors"
+                    title="Close navigation"
+                  >
+                    <X className="w-3.5 h-3.5" strokeWidth={2} />
+                  </button>
+                </div>
               </div>
 
               {/* Exact Category Label from reference screenshot: ADMINISTRATION */}

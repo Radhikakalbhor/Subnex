@@ -42,7 +42,10 @@ export default function Navbar({
             <MenuButton
               isOpen={isMenuOpen}
               onClick={onToggleMenu}
-              className="py-1.5 px-3 text-xs"
+              onMouseEnter={() => {
+                if (!isMenuOpen) onToggleMenu();
+              }}
+              className="py-1.5 px-3.5 text-xs shadow-xs"
             />
           )}
 
