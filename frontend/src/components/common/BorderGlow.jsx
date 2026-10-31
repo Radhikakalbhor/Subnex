@@ -1,9 +1,11 @@
 import React, { useRef, useEffect } from 'react';
 import { cn } from '@/lib/utils';
+import GlassSurface from './GlassSurface';
 
 /**
  * BorderGlow - Interactive edge-sensing glow container from React Bits.
  * Tracks pointer direction and intensifies a mesh/conic gradient border when cursor nears the edges.
+ * Integrated with GlassSurface for Apple-grade frosted liquid glass refraction with crisp typography.
  */
 export const BorderGlow = ({
   children,
@@ -12,12 +14,13 @@ export const BorderGlow = ({
   edgeSensitivity = 30,
   coneSpread = 25,
   glowColor = '40 80 80',
-  backgroundColor = '#FFFFFF',
+  backgroundColor = 'rgba(255, 255, 255, 0.88)',
   borderRadius = 28,
   glowRadius = 40,
   glowIntensity = 1.0,
   animated = false,
   colors = ['#c084fc', '#f472b6', '#38bdf8'],
+  glass = true,
   style = {},
   ...props
 }) => {
@@ -97,9 +100,22 @@ export const BorderGlow = ({
       {/* Conic mask border layer */}
       <div className="border-glow-effect" />
 
-      {/* Actual inner card content */}
+      {/* Actual inner card content with GlassSurface for Apple-grade frosted glass */}
       <div className={cn('border-glow-content', contentClassName)}>
-        {children}
+        {glass ? (
+          <GlassSurface
+            borderRadius={Math.max(12, borderRadius - 2)}
+            backgroundOpacity={0.88}
+            distortionScale={-180}
+            displace={0.5}
+            blur={11}
+            className="w-full h-full"
+          >
+            {children}
+          </GlassSurface>
+        ) : (
+          children
+        )}
       </div>
     </div>
   );
@@ -111,13 +127,14 @@ export const BorderGlowCard = ({
   contentClassName = '',
   edgeSensitivity = 30,
   glowColor = '40 80 80',
-  backgroundColor = '#FFFFFF',
+  backgroundColor = 'rgba(255, 255, 255, 0.88)',
   borderRadius = 22,
   glowRadius = 40,
   glowIntensity = 1,
   coneSpread = 25,
   animated = false,
   colors = ['#c084fc', '#f472b6', '#38bdf8'],
+  glass = true,
   ...props
 }) => {
   return (
@@ -131,6 +148,7 @@ export const BorderGlowCard = ({
       coneSpread={coneSpread}
       animated={animated}
       colors={colors}
+      glass={glass}
       className={cn('border border-black/[0.06] shadow-[0_2px_12px_rgba(0,0,0,0.02)]', className)}
       contentClassName={contentClassName}
       {...props}

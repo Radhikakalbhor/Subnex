@@ -1,0 +1,80 @@
+.glass-surface {
+  position: relative;
+  overflow: hidden;
+  transition: opacity 0.26s ease-out;
+}
+
+.glass-surface__filter {
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  z-index: -1;
+}
+
+.glass-surface__content {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  position: relative;
+  z-index: 1;
+}
+
+.glass-surface--svg {
+  background: rgba(255, 255, 255, var(--glass-frost, 0.88));
+  backdrop-filter: var(--filter-id, url(#glass-filter)) saturate(var(--glass-saturation, 1.2)) blur(16px);
+  -webkit-backdrop-filter: var(--filter-id, url(#glass-filter)) saturate(var(--glass-saturation, 1.2)) blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.02),
+    0 4px 16px rgba(17, 17, 26, 0.04),
+    0 12px 32px rgba(17, 17, 26, 0.04);
+}
+
+.glass-surface--webgl {
+  background: rgba(255, 255, 255, var(--glass-frost, 0.88));
+  box-shadow:
+    0px 4px 16px rgba(17, 17, 26, 0.05),
+    0px 8px 24px rgba(17, 17, 26, 0.05),
+    0px 16px 56px rgba(17, 17, 26, 0.05);
+}
+
+.glass-surface--fallback {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+.glass-surface__canvas,
+.glass-surface__frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.glass-surface__frame {
+  border-radius: inherit;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.4) inset;
+}
+
+.glass-surface__sheen {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0) 50%);
+  pointer-events: none;
+}
+
+.glass-surface__rim {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  pointer-events: none;
+}

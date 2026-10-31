@@ -629,3 +629,4 @@ export default function GradientWaves({
 
   return <div ref={containerRef} className={[ROOT, className].filter(Boolean).join(' ')} style={style} />;
 }
+
