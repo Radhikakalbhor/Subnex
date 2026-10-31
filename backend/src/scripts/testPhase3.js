@@ -21,6 +21,8 @@ async function runTests() {
   await initDb();
   await ensureDefaultAdmin();
 
+  const ts = Date.now();
+
   // 1. Authenticate Admin
   const adminLoginRes = await request(app)
     .post('/api/v1/auth/login')
@@ -32,7 +34,7 @@ async function runTests() {
   const adminToken = adminLoginRes.body.data.token;
 
   // 2. Create Staff user
-  const staffEmail = 'staff.phase3@subnex.io';
+  const staffEmail = `staff.phase3.${ts}@subnex.io`;
   const staffPass = 'StaffPhase3Pass@2026!';
   const createStaffRes = await request(app)
     .post('/api/v1/users/staff')
@@ -53,7 +55,7 @@ async function runTests() {
   const customerARes = await request(app)
     .post('/api/v1/auth/register')
     .send({
-      email: 'customer.alice.p3@subnex.io',
+      email: `customer.alice.p3.${ts}@subnex.io`,
       password: 'AlicePass@2026!',
       full_name: 'Alice Phase3',
     });
@@ -65,7 +67,7 @@ async function runTests() {
   const customerBRes = await request(app)
     .post('/api/v1/auth/register')
     .send({
-      email: 'customer.bob.p3@subnex.io',
+      email: `customer.bob.p3.${ts}@subnex.io`,
       password: 'BobPass@2026!',
       full_name: 'Bob Phase3',
     });
@@ -78,11 +80,11 @@ async function runTests() {
     .post('/api/v1/products')
     .set('Authorization', `Bearer ${adminToken}`)
     .send({
-      name: 'Managed Kubernetes Cluster',
+      name: `Managed Kubernetes Cluster ${ts}`,
       type: 'saas',
       sales_price: 199.00,
       cost_price: 50.00,
-      sku: 'PROD-K8S-P3',
+      sku: `PROD-K8S-P3-${ts}`,
     });
   const productId = prodRes.body.data.id;
 
@@ -92,7 +94,7 @@ async function runTests() {
     .send({
       name: 'High Memory K8s Node',
       brand: 'Subnex K8s',
-      sku: 'VAR-K8S-HM',
+      sku: `VAR-K8S-HM-${ts}`,
       additional_price: 100.00,
     });
   const variantId = varRes.body.data.id;
@@ -102,7 +104,7 @@ async function runTests() {
     .post('/api/v1/taxes')
     .set('Authorization', `Bearer ${adminToken}`)
     .send({
-      name: 'Service Tax 10%',
+      name: `Service Tax 10% ${ts}`,
       rate: 10.00,
       tax_type: 'percentage',
     });
@@ -114,7 +116,7 @@ async function runTests() {
     .set('Authorization', `Bearer ${adminToken}`)
     .send({
       name: 'K8s Monthly Standard',
-      code: 'PLAN-K8S-STANDARD',
+      code: `PLAN-K8S-STANDARD-${ts}`,
       billing_interval: 'month',
       billing_interval_count: 1,
       price: 200.00,
@@ -130,7 +132,7 @@ async function runTests() {
     .set('Authorization', `Bearer ${adminToken}`)
     .send({
       name: 'K8s Annual Locked',
-      code: 'PLAN-K8S-LOCKED',
+      code: `PLAN-K8S-LOCKED-${ts}`,
       billing_interval: 'year',
       billing_interval_count: 1,
       price: 2000.00,
@@ -149,8 +151,8 @@ async function runTests() {
     .post('/api/v1/quotations')
     .set('Authorization', `Bearer ${adminToken}`)
     .send({
-      name: 'Enterprise Cloud Agreement 2026',
-      code: 'QT-ENTERPRISE-2026',
+      name: `Enterprise Cloud Agreement ${ts}`,
+      code: `QT-ENTERPRISE-${ts}`,
       description: 'Standard SLA terms with 45-day validity and Net 30 payment terms.',
       terms_and_conditions: 'Services are billed monthly in advance. 99.9% uptime SLA.',
       default_validity_days: 45,

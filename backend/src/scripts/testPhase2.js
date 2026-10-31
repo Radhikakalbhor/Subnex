@@ -21,6 +21,8 @@ async function runTests() {
   await initDb();
   await ensureDefaultAdmin();
 
+  const ts = Date.now();
+
   // Obtain Admin & Customer Tokens
   const adminLoginRes = await request(app)
     .post('/api/v1/auth/login')
@@ -34,7 +36,7 @@ async function runTests() {
   const customerRegisterRes = await request(app)
     .post('/api/v1/auth/register')
     .send({
-      email: 'customer.phase2@subnex.io',
+      email: `customer.phase2.${ts}@subnex.io`,
       password: 'CustomerPass@2026!',
       full_name: 'Phase2 Tester',
     });
@@ -69,12 +71,12 @@ async function runTests() {
 
   // 1c. Admin creates valid product
   const prodData = {
-    name: 'Cloud Infrastructure Engine',
+    name: `Cloud Infrastructure Engine ${ts}`,
     type: 'saas',
     sales_price: 299.00,
     cost_price: 80.00,
     notes: 'Primary enterprise cloud hosting offering with 99.9% SLA.',
-    sku: 'PROD-CLOUD-INFRA',
+    sku: `PROD-CLOUD-INFRA-${ts}`,
     description: 'High-availability compute and container infrastructure.',
   };
 
@@ -135,7 +137,7 @@ async function runTests() {
     name: 'Dedicated CPU Tier',
     brand: 'Subnex Cloud Pro',
     additional_price: 150.00,
-    sku: 'VAR-CLOUD-DEDICATED',
+    sku: `VAR-CLOUD-DEDICATED-${ts}`,
     attributes: { cpu_cores: 8, ram_gb: 32, storage: '1TB NVMe' },
   };
 
@@ -194,7 +196,7 @@ async function runTests() {
     .set('Authorization', `Bearer ${adminToken}`)
     .send({
       name: 'Dedicated Daily Burst',
-      code: 'PLAN-DEDICATED-DAILY',
+      code: `PLAN-DEDICATED-DAILY-${ts}`,
       billing_interval: 'day',
       billing_interval_count: 1,
       price: 25.00,
@@ -213,7 +215,7 @@ async function runTests() {
     .set('Authorization', `Bearer ${adminToken}`)
     .send({
       name: 'Dedicated Weekly Sprint',
-      code: 'PLAN-DEDICATED-WEEKLY',
+      code: `PLAN-DEDICATED-WEEKLY-${ts}`,
       billing_interval: 'week',
       billing_interval_count: 1,
       price: 150.00,
@@ -228,7 +230,7 @@ async function runTests() {
     .set('Authorization', `Bearer ${adminToken}`)
     .send({
       name: 'Dedicated Monthly Growth',
-      code: 'PLAN-DEDICATED-MONTHLY',
+      code: `PLAN-DEDICATED-MONTHLY-${ts}`,
       billing_interval: 'month',
       billing_interval_count: 1,
       price: 499.00,
@@ -254,7 +256,7 @@ async function runTests() {
     .set('Authorization', `Bearer ${adminToken}`)
     .send({
       name: 'Dedicated Annual Commit',
-      code: 'PLAN-DEDICATED-YEARLY',
+      code: `PLAN-DEDICATED-YEARLY-${ts}`,
       billing_interval: 'year',
       billing_interval_count: 1,
       price: 4990.00,
@@ -393,7 +395,7 @@ async function runTests() {
 
   // 5c. Admin creates Subscription-wide percentage discount with limits & dates
   const subDiscountData = {
-    code: 'WELCOME20',
+    code: `WELCOME20-${ts}`,
     name: 'New Customer Welcome Promo',
     discount_type: 'percentage',
     value: 20.00,
@@ -419,7 +421,7 @@ async function runTests() {
 
   // 5d. Admin creates Product-specific fixed-amount discount
   const prodDiscountData = {
-    code: 'CLOUD50OFF',
+    code: `CLOUD50OFF-${ts}`,
     name: '$50 Off Cloud Infrastructure',
     discount_type: 'fixed_amount',
     value: 50.00,

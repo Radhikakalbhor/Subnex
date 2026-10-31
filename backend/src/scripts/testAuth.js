@@ -21,6 +21,8 @@ async function runTests() {
   await initDb();
   await ensureDefaultAdmin();
 
+  const ts = Date.now();
+
   // -----------------------------------------------------------------
   // TEST 1: Password Complexity Enforcement (>8 chars, upper, lower, special)
   // -----------------------------------------------------------------
@@ -30,7 +32,7 @@ async function runTests() {
   const shortRes = await request(app)
     .post('/api/v1/auth/register')
     .send({
-      email: 'short@example.com',
+      email: `short.${ts}@example.com`,
       password: 'Ab1!', // 4 chars
       full_name: 'Short Tester',
     });
@@ -43,7 +45,7 @@ async function runTests() {
   const noUpperRes = await request(app)
     .post('/api/v1/auth/register')
     .send({
-      email: 'noupper@example.com',
+      email: `noupper.${ts}@example.com`,
       password: 'password@123', // 12 chars, no uppercase
       full_name: 'No Upper',
     });
@@ -56,7 +58,7 @@ async function runTests() {
   const noLowerRes = await request(app)
     .post('/api/v1/auth/register')
     .send({
-      email: 'nolower@example.com',
+      email: `nolower.${ts}@example.com`,
       password: 'PASSWORD@123', // 12 chars, no lowercase
       full_name: 'No Lower',
     });
@@ -69,7 +71,7 @@ async function runTests() {
   const noSpecialRes = await request(app)
     .post('/api/v1/auth/register')
     .send({
-      email: 'nospecial@example.com',
+      email: `nospecial.${ts}@example.com`,
       password: 'Password123', // 11 chars, no special char
       full_name: 'No Special',
     });
@@ -84,7 +86,7 @@ async function runTests() {
   console.log('\n[Group 2: Customer Signup & Unique Email]');
 
   const customerAData = {
-    email: 'customer.alice@subnex.io',
+    email: `customer.alice.${ts}@subnex.io`,
     password: 'SecurePassword123!', // 17 chars, upper, lower, special
     full_name: 'Alice Johnson',
     company_name: 'Alice Ventures',
@@ -110,7 +112,7 @@ async function runTests() {
   const customerBRes = await request(app)
     .post('/api/v1/auth/register')
     .send({
-      email: 'customer.bob@subnex.io',
+      email: `customer.bob.${ts}@subnex.io`,
       password: 'BobSecurePassword@2026',
       full_name: 'Bob Smith',
     });
@@ -220,7 +222,7 @@ async function runTests() {
     .post('/api/v1/users/staff')
     .set('Authorization', `Bearer ${customerBToken}`)
     .send({
-      email: 'unauthorized.staff@subnex.io',
+      email: `unauthorized.staff.${ts}@subnex.io`,
       password: 'StaffPassword@2026',
       full_name: 'Unauthorized Staff',
     });
@@ -230,7 +232,7 @@ async function runTests() {
   );
 
   // 5c. Admin creates Staff account -> MUST SUCCEED (201)
-  const staffEmail = 'support.staff@subnex.io';
+  const staffEmail = `support.staff.${ts}@subnex.io`;
   const staffPassword = 'StaffPassword@2026';
   const adminCreateStaffRes = await request(app)
     .post('/api/v1/users/staff')
