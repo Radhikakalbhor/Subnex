@@ -1,0 +1,38 @@
+{
+  "name": "subnex-backend",
+  "version": "1.0.0",
+  "description": "SUBNEX - Subscription Management System Backend",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "test": "node src/scripts/testAuth.js && node src/scripts/testPhase2.js && node src/scripts/testPhase3.js",
+    "test:auth": "node src/scripts/testAuth.js",
+    "test:phase2": "node src/scripts/testPhase2.js",
+    "test:phase3": "node src/scripts/testPhase3.js",
+    "db:init": "node src/scripts/initDb.js"
+  },
+  "keywords": [
+    "subscription-management",
+    "billing",
+    "invoicing",
+    "recurring-payments"
+  ],
+  "author": "SUBNEX Team",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "node-cron": "^3.0.3",
+    "nodemailer": "^6.9.13",
+    "pg": "^8.11.5",
+    "pg-mem": "^3.0.14"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0",
+    "supertest": "^7.3.1"
+  }
+}
