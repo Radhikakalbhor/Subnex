@@ -28,6 +28,7 @@ export default function SubscriptionList() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
   const pageSize = 10;
 
   // Selected subscription for details modal
@@ -41,11 +42,25 @@ export default function SubscriptionList() {
     setLoading(true);
     setError(null);
     try {
-      const params = {};
+      const params = {
+        page: currentPage,
+        limit: pageSize,
+      };
       if (statusFilter !== 'all') params.status = statusFilter;
+      if (searchTerm && searchTerm.trim()) params.search = searchTerm.trim();
 
       const res = await api.get('/subscriptions', { params });
-      setSubscriptions(res.data.data || []);
+      const data = res.data.data;
+      if (data && data.subscriptions) {
+        setSubscriptions(data.subscriptions);
+        setTotalCount(data.total || 0);
+      } else if (Array.isArray(data)) {
+        setSubscriptions(data);
+        setTotalCount(data.length);
+      } else {
+        setSubscriptions([]);
+        setTotalCount(0);
+      }
     } catch (err) {
       setError(err.response?.data?.message || err.message || 'Failed to fetch subscriptions');
     } finally {
@@ -55,7 +70,7 @@ export default function SubscriptionList() {
 
   useEffect(() => {
     fetchSubscriptions();
-  }, [statusFilter]);
+  }, [statusFilter, currentPage, searchTerm]);
 
   const handleTransition = async (subId, targetStatus) => {
     setActionMsg(null);
@@ -88,22 +103,6 @@ export default function SubscriptionList() {
       setModalLoading(false);
     }
   };
-
-  // Filter subscriptions client-side by search term
-  const filteredSubs = subscriptions.filter((sub) => {
-    if (!searchTerm) return true;
-    const term = searchTerm.toLowerCase();
-    return (
-      sub.subscription_number?.toLowerCase().includes(term) ||
-      sub.customer_name?.toLowerCase().includes(term) ||
-      sub.customer_email?.toLowerCase().includes(term)
-    );
-  });
-
-  const paginatedSubs = filteredSubs.slice(
-    (currentPage - 1) * pageSize,
-    currentPage * pageSize
-  );
 
   return (
     <div className="space-y-6">
@@ -146,7 +145,7 @@ export default function SubscriptionList() {
                 setSearchTerm(e.target.value);
                 setCurrentPage(1);
               }}
-              placeholder="Search by subscription #, customer name, email..."
+              placeholder="Search all subscriptions by number, customer, email..."
               className="w-full pl-9 pr-3 py-2 text-xs border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500"
             />
           </div>
@@ -178,7 +177,7 @@ export default function SubscriptionList() {
       <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
         {loading ? (
           <LoadingSpinner message="Loading subscriptions..." />
-        ) : filteredSubs.length === 0 ? (
+        ) : subscriptions.length === 0 ? (
           <EmptyState
             title="No subscriptions match your query"
             description="Try adjusting your status filter or search parameters."
@@ -199,7 +198,7 @@ export default function SubscriptionList() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
-                  {paginatedSubs.map((sub) => (
+                  {subscriptions.map((sub) => (
                     <tr key={sub.id} className="hover:bg-slate-50/70">
                       <td className="px-5 py-3.5 font-mono font-bold text-slate-900">
                         {sub.subscription_number}
@@ -272,7 +271,7 @@ export default function SubscriptionList() {
             {/* Pagination (Requirement 8) */}
             <Pagination
               currentPage={currentPage}
-              totalItems={filteredSubs.length}
+              totalItems={totalCount}
               pageSize={pageSize}
               onPageChange={setCurrentPage}
             />

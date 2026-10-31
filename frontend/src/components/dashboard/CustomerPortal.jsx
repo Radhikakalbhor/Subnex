@@ -44,7 +44,7 @@ export default function CustomerPortal({ onOpenRecordPayment, onRecordPaymentFor
         api.get('/dashboard/stats'),
       ]);
 
-      setSubscriptions(subsRes.data.data || []);
+      setSubscriptions(subsRes.data.data?.subscriptions || subsRes.data.data || []);
       setInvoices(invsRes.data.data?.invoices || []);
       setPayments(paysRes.data.data?.payments || []);
       setStats(statsRes.data.data || null);
