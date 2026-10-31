@@ -56,7 +56,7 @@ EXCEPTION
 END $$;
 
 DO $$ BEGIN
-    CREATE TYPE invoice_status AS ENUM ('draft', 'open', 'paid', 'void', 'uncollectible');
+    CREATE TYPE invoice_status AS ENUM ('draft', 'confirmed', 'paid', 'open', 'void', 'uncollectible');
 EXCEPTION
     WHEN duplicate_object THEN null;
 END $$;
@@ -328,7 +328,8 @@ CREATE TABLE IF NOT EXISTS invoices (
     
     notes TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT uq_invoice_subscription_period UNIQUE (subscription_id, billing_period_start)
 );
 
 CREATE INDEX IF NOT EXISTS idx_invoices_customer_status ON invoices(customer_id, status);
@@ -393,4 +394,22 @@ CREATE TABLE IF NOT EXISTS payments (
 CREATE INDEX IF NOT EXISTS idx_payments_invoice ON payments(invoice_id);
 CREATE INDEX IF NOT EXISTS idx_payments_customer ON payments(customer_id);
 CREATE INDEX IF NOT EXISTS idx_payments_status ON payments(status);
+
+-- Migration helpers for incremental updates
+DO $$ BEGIN
+    ALTER TYPE invoice_status ADD VALUE IF NOT EXISTS 'confirmed';
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint WHERE conname = 'uq_invoice_subscription_period'
+    ) THEN
+        ALTER TABLE invoices ADD CONSTRAINT uq_invoice_subscription_period UNIQUE (subscription_id, billing_period_start);
+    END IF;
+EXCEPTION
+    WHEN duplicate_table THEN null;
+    WHEN duplicate_object THEN null;
+END $$;
 

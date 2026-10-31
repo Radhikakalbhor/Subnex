@@ -671,12 +671,12 @@ flowchart LR
     P6 --> P7["Phase 7: End-to-End Testing & Hardening"]
 ```
 
-- **Phase 0 (Current):** Project Planning, Database Modeling, Directory Scaffolding, Environment configuration.
-- **Phase 1:** Database setup (PostgreSQL connection pool, tables DDL execution), User Registration, Login, JWT auth, and Password Reset flow.
-- **Phase 2:** Product Catalog Engine: CRUD for Products, Variants, Plans, Taxes, and Discounts.
-- **Phase 3:** Subscription Engine: Creation, line item management, period dates, cancel/pause logic, and quotation templates.
-- **Phase 4:** Billing & Invoicing Engine: Invoice generation, calculation logic (subtotal, taxes, discounts, balance), and Payment recording.
-- **Phase 5:** Scheduled Billing & Nodemailer: `node-cron` background worker for recurring invoice generation and transactional email alerts.
+- **Phase 0:** Project Planning, Database Modeling, Directory Scaffolding, Environment configuration. [Completed]
+- **Phase 1:** Database setup (PostgreSQL connection pool, tables DDL execution), User Registration, Login, JWT auth, and Password Reset flow. [Completed - 26/26 tests passed]
+- **Phase 2:** Product Catalog Engine: CRUD for Products, Variants, Plans, Taxes, and Discounts. [Completed - 45/45 tests passed]
+- **Phase 3:** Subscription Engine: Creation, line item management, period dates, cancel/pause logic, and quotation templates. [Completed - 39/39 tests passed]
+- **Phase 4:** Automatic Invoicing & Recurring Billing Engine: Automated recurring billing engine via `node-cron` & `invoiceService`, due date calculation by payment terms (`Due Upon Receipt`, `Net 15`, `Net 30`), tax rules, automatic eligible discount engine with safe atomic redemptions, idempotent duplicate invoice prevention via PostgreSQL UNIQUE constraint, atomic transaction rollbacks, daily/weekly/monthly/yearly cycle advancements, status progression (`draft` -> `confirmed` -> `paid`), customer data isolation, and plan `allow_auto_close` expiry vs auto-renewal lifecycle management. [Completed - 67/67 tests passed]
+- **Phase 5:** Payments & Reconciliations: Multi-method payment recording and status reconciliation (pending/successful/failed/refunded).
 - **Phase 6:** React + Tailwind CSS Frontend: Auth views, Admin management portal, and Customer self-service dashboard.
 - **Phase 7:** End-to-End Integration, Validation testing, security audit, and documentation polishing.
 

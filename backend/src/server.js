@@ -1,6 +1,7 @@
 const app = require('./app');
 const config = require('./config/env');
 const { initDb, query } = require('./config/db');
+const { initBillingCron } = require('./services/cronService');
 const bcrypt = require('bcrypt');
 
 async function ensureDefaultAdmin() {
@@ -35,6 +36,10 @@ async function startServer() {
       console.log(`  Base API URL: http://localhost:${config.port}/api/v1`);
       console.log(`=======================================================`);
     });
+
+    if (config.nodeEnv !== 'test') {
+      initBillingCron();
+    }
 
     return server;
   } catch (err) {

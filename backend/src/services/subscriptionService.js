@@ -11,8 +11,9 @@ const ALLOWED_TRANSITIONS = {
   draft: ['quotation', 'confirmed', 'closed'],
   quotation: ['confirmed', 'closed'],
   confirmed: ['active', 'closed'],
-  active: ['paused', 'closed'],
+  active: ['paused', 'closed', 'expired'],
   paused: ['active', 'closed'],
+  expired: ['active', 'closed'],
   closed: [], // Terminal state
 };
 
@@ -358,8 +359,8 @@ async function transitionStatus(subscriptionId, targetStatus, user) {
 async function renewSubscription(subscriptionId, user) {
   const sub = await getSubscriptionById(subscriptionId, user);
 
-  if (sub.status !== 'active' && sub.status !== 'confirmed') {
-    const error = new Error(`Only active or confirmed subscriptions can be renewed. Current status: '${sub.status}'.`);
+  if (sub.status !== 'active' && sub.status !== 'confirmed' && sub.status !== 'expired') {
+    const error = new Error(`Only active, confirmed or expired subscriptions can be renewed. Current status: '${sub.status}'.`);
     error.statusCode = 400;
     throw error;
   }
@@ -381,7 +382,7 @@ async function renewSubscription(subscriptionId, user) {
 
   const updateSql = `
     UPDATE subscriptions
-    SET expiry_date = $1, current_period_end = $1, next_billing_date = $1, updated_at = CURRENT_TIMESTAMP
+    SET expiry_date = $1, current_period_end = $1, next_billing_date = $1, status = 'active', updated_at = CURRENT_TIMESTAMP
     WHERE id = $2
     RETURNING *
   `;
