@@ -5,6 +5,10 @@ import StatCard from '../common/StatCard';
 import LoadingSpinner from '../common/LoadingSpinner';
 import Modal from '../common/Modal';
 import { StatusBadge } from '../common/Badge';
+import { SubscriptionCalendar } from '../watermelon/SubscriptionCalendar';
+import { CreditUsageCard } from '../watermelon/CreditUsageCard';
+import { CopyConfirm } from '../watermelon/CopyConfirm';
+import { ShimmerButton } from '../watermelon/ShimmerButton';
 import { formatCurrency, formatDate, formatPaymentMethod } from '../../utils/formatters';
 import {
   Layers,
@@ -78,12 +82,12 @@ export default function CustomerPortal({ onOpenRecordPayment, onRecordPaymentFor
 
   if (error) {
     return (
-      <div className="bg-rose-50 border border-rose-200 text-rose-800 p-6 rounded-2xl">
-        <h3 className="font-bold text-sm mb-1">Failed to load portal data</h3>
-        <p className="text-xs">{error}</p>
+      <div className="bg-rose-500/[0.08] border border-rose-500/20 text-rose-700 p-6 rounded-[22px]">
+        <h3 className="font-semibold text-sm mb-1">Failed to load portal data</h3>
+        <p className="text-xs text-rose-600/90">{error}</p>
         <button
           onClick={fetchCustomerData}
-          className="mt-3 px-3.5 py-1.5 bg-rose-600 text-white text-xs font-semibold rounded-lg hover:bg-rose-700"
+          className="mt-3 px-3.5 py-1.5 bg-rose-600 text-white text-xs font-semibold rounded-full hover:bg-rose-700 transition-colors"
         >
           Retry
         </button>
@@ -98,38 +102,39 @@ export default function CustomerPortal({ onOpenRecordPayment, onRecordPaymentFor
   return (
     <div className="space-y-6">
       {/* Customer Hero Banner */}
-      <div className="bg-gradient-to-r from-indigo-900 to-slate-900 text-white rounded-2xl p-6 sm:p-8 shadow-md">
+      <div className="saas-card p-6 sm:p-8">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <div className="inline-flex items-center text-xs font-bold px-2.5 py-0.5 rounded-full bg-indigo-500/30 text-indigo-200 border border-indigo-400/30 mb-2">
+            <div className="inline-flex items-center text-[11px] font-medium px-3 py-1 rounded-full bg-[#F5F6F8] text-neutral-600 border border-black/[0.04] mb-2.5">
               Subscriber Self-Service Portal
             </div>
-            <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-neutral-900">
               Welcome back, {user?.full_name}
             </h1>
-            <p className="text-xs text-slate-300 mt-1">
-              Account: <span className="font-semibold text-white">{user?.email}</span>
+            <p className="text-xs text-neutral-500 mt-1 font-normal">
+              Account: <span className="font-semibold text-neutral-800">{user?.email}</span>
               {user?.company_name && <span> • Organization: {user?.company_name}</span>}
             </p>
           </div>
           {unpaidInvoices.length > 0 && (
-            <button
+            <ShimmerButton
               onClick={() => handleOpenInvoiceStatement(unpaidInvoices[0])}
-              className="self-start md:self-auto inline-flex items-center px-4 py-2.5 text-xs font-bold text-slate-900 bg-white hover:bg-slate-100 rounded-xl shadow-lg transition-all"
+              size="md"
+              className="self-start md:self-auto text-xs"
             >
-              <FileText className="w-4 h-4 mr-2 text-indigo-600" />
+              <FileText className="w-3.5 h-3.5 mr-1.5" strokeWidth={1.75} />
               View Outstanding Invoices ({formatCurrency(kpis.total_outstanding || 0)})
-            </button>
+            </ShimmerButton>
           )}
         </div>
       </div>
 
       {/* Overdue Warning Callout (if any) */}
       {overdueInvoices.length > 0 && (
-        <div className="bg-rose-50 border border-rose-200 rounded-xl p-4 flex items-start space-x-3 text-rose-800">
-          <ShieldAlert className="w-5 h-5 flex-shrink-0 text-rose-600 mt-0.5" />
-          <div className="text-xs">
-            <span className="font-bold">Overdue Invoices Alert: </span>
+        <div className="bg-rose-500/[0.08] border border-rose-500/20 rounded-[20px] p-4 flex items-start space-x-3 text-rose-800">
+          <ShieldAlert className="w-5 h-5 flex-shrink-0 text-rose-600 mt-0.5" strokeWidth={1.75} />
+          <div className="text-xs leading-relaxed">
+            <span className="font-semibold">Overdue Invoices Alert: </span>
             You have {overdueInvoices.length} overdue invoice(s) totaling{' '}
             <span className="font-bold">{formatCurrency(kpis.total_overdue_amount || 0)}</span>.
             Please coordinate payment remittance with your account manager to avoid service disruption.
@@ -138,8 +143,7 @@ export default function CustomerPortal({ onOpenRecordPayment, onRecordPaymentFor
       )}
 
       {/* Customer KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* 1. Active Subscriptions */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
         <StatCard
           title="My Active Plans"
           value={kpis.active_subscriptions || 0}
@@ -148,7 +152,6 @@ export default function CustomerPortal({ onOpenRecordPayment, onRecordPaymentFor
           color="indigo"
         />
 
-        {/* 2. Outstanding Balance */}
         <StatCard
           title="Outstanding Balance"
           value={formatCurrency(kpis.total_outstanding || 0)}
@@ -159,7 +162,6 @@ export default function CustomerPortal({ onOpenRecordPayment, onRecordPaymentFor
           badgeType={kpis.total_outstanding > 0 ? 'danger' : 'default'}
         />
 
-        {/* 3. Invoices Total */}
         <StatCard
           title="Total Invoiced"
           value={formatCurrency(kpis.total_invoiced || 0)}
@@ -168,7 +170,6 @@ export default function CustomerPortal({ onOpenRecordPayment, onRecordPaymentFor
           color="blue"
         />
 
-        {/* 4. Total Paid */}
         <StatCard
           title="Total Payments Reconciled"
           value={formatCurrency(kpis.total_revenue || 0)}
@@ -178,26 +179,42 @@ export default function CustomerPortal({ onOpenRecordPayment, onRecordPaymentFor
         />
       </div>
 
+      {/* Watermelon UI: Interactive Subscription Calendar & Account Meter */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <SubscriptionCalendar
+          subscriptions={subscriptions}
+          monthlyTotal={subscriptions.reduce((sum, s) => sum + Number(s.total_amount || 0), 0)}
+        />
+        <CreditUsageCard
+          title="Account Settlement & Invoiced Fulfillment"
+          collectedAmount={kpis.total_revenue || 0}
+          invoicedTotal={kpis.total_invoiced || 0}
+          outstandingAmount={kpis.total_outstanding || 0}
+        />
+      </div>
+
       {/* 1. My Subscriptions */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
-        <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+      <div className="saas-card overflow-hidden">
+        <div className="px-6 py-4 border-b border-black/[0.05] flex items-center justify-between bg-white">
           <div>
-            <h2 className="text-base font-bold text-slate-900 flex items-center">
-              <Layers className="w-4 h-4 mr-2 text-indigo-600" />
-              1. My Subscriptions
+            <h2 className="text-sm font-semibold text-neutral-900 flex items-center tracking-tight">
+              <div className="w-6 h-6 rounded-full bg-[#F5F6F8] flex items-center justify-center mr-2 text-neutral-700">
+                <Layers className="w-3.5 h-3.5" strokeWidth={1.75} />
+              </div>
+              My Subscriptions
             </h2>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <p className="text-xs text-neutral-400 mt-0.5">
               Overview of your subscribed products, intervals and billing cycle anchors.
             </p>
           </div>
-          <span className="text-xs font-semibold px-2.5 py-1 bg-indigo-50 text-indigo-700 rounded-full border border-indigo-100">
+          <span className="text-[11px] font-medium px-2.5 py-0.5 bg-[#F5F6F8] text-neutral-700 rounded-full border border-black/[0.04]">
             {subscriptions.length} Plan(s)
           </span>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase tracking-wider font-semibold">
+            <thead className="bg-[#FAFAFA] border-b border-black/[0.05] text-neutral-400 uppercase tracking-wider font-semibold text-[11px]">
               <tr>
                 <th className="px-6 py-3">Subscription #</th>
                 <th className="px-6 py-3">Plan / Product</th>
@@ -208,43 +225,43 @@ export default function CustomerPortal({ onOpenRecordPayment, onRecordPaymentFor
                 <th className="px-6 py-3">Status</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-black/[0.04]">
               {subscriptions.length === 0 ? (
                 <tr>
-                  <td colSpan="7" className="text-center py-8 text-slate-400 italic">
+                  <td colSpan="7" className="text-center py-8 text-neutral-400 italic">
                     No active subscriptions assigned to this account.
                   </td>
                 </tr>
               ) : (
                 subscriptions.map((sub) => (
-                  <tr key={sub.id} className="hover:bg-slate-50/70">
-                    <td className="px-6 py-3.5 font-bold text-indigo-600">
+                  <tr key={sub.id} className="hover:bg-[#F9FAFB] transition-colors">
+                    <td className="px-6 py-3.5 font-semibold text-neutral-900">
                       {sub.subscription_number}
                     </td>
                     <td className="px-6 py-3.5">
-                      <div className="font-bold text-slate-900">
+                      <div className="font-semibold text-neutral-900">
                         {sub.plan_name || 'Standard Plan'}
                       </div>
-                      <div className="text-[10px] text-slate-400">
+                      <div className="text-[10px] text-neutral-400">
                         {sub.lines?.length || 1} line item(s) configured
                       </div>
                     </td>
-                    <td className="px-6 py-3.5 font-medium text-slate-700 capitalize">
+                    <td className="px-6 py-3.5 font-medium text-neutral-600 capitalize">
                       {sub.billing_interval || 'Monthly'}
                     </td>
-                    <td className="px-6 py-3.5 text-slate-600">
+                    <td className="px-6 py-3.5 text-neutral-500">
                       {formatDate(sub.start_date || sub.current_period_start)}
                     </td>
-                    <td className="px-6 py-3.5 text-slate-600">
+                    <td className="px-6 py-3.5 text-neutral-500">
                       {sub.next_billing_date ? (
-                        <span className="font-semibold text-slate-900">
+                        <span className="font-semibold text-neutral-900">
                           {formatDate(sub.next_billing_date)}
                         </span>
                       ) : (
-                        <span className="text-slate-400 italic">End of Term</span>
+                        <span className="text-neutral-400 italic">End of Term</span>
                       )}
                     </td>
-                    <td className="px-6 py-3.5 font-bold text-slate-900">
+                    <td className="px-6 py-3.5 font-semibold text-neutral-900">
                       {formatCurrency(sub.total_amount)}
                     </td>
                     <td className="px-6 py-3.5">
@@ -259,14 +276,16 @@ export default function CustomerPortal({ onOpenRecordPayment, onRecordPaymentFor
       </div>
 
       {/* 2 & 3. Invoices Ledger */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
-        <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+      <div className="saas-card overflow-hidden">
+        <div className="px-6 py-4 border-b border-black/[0.05] flex items-center justify-between bg-white">
           <div>
-            <h2 className="text-base font-bold text-slate-900 flex items-center">
-              <FileText className="w-4 h-4 mr-2 text-blue-600" />
-              2 & 3. My Invoices & Billing Statements
+            <h2 className="text-sm font-semibold text-neutral-900 flex items-center tracking-tight">
+              <div className="w-6 h-6 rounded-full bg-[#F5F6F8] flex items-center justify-center mr-2 text-neutral-700">
+                <FileText className="w-3.5 h-3.5" strokeWidth={1.75} />
+              </div>
+              My Invoices & Billing Statements
             </h2>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <p className="text-xs text-neutral-400 mt-0.5">
               Review line items, payment terms, reconciled amounts and outstanding balances.
             </p>
           </div>
@@ -274,7 +293,7 @@ export default function CustomerPortal({ onOpenRecordPayment, onRecordPaymentFor
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase tracking-wider font-semibold">
+            <thead className="bg-[#FAFAFA] border-b border-black/[0.05] text-neutral-400 uppercase tracking-wider font-semibold text-[11px]">
               <tr>
                 <th className="px-6 py-3">Invoice #</th>
                 <th className="px-6 py-3">Issue Date</th>
@@ -286,33 +305,36 @@ export default function CustomerPortal({ onOpenRecordPayment, onRecordPaymentFor
                 <th className="px-6 py-3 text-right">Statement</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-black/[0.04]">
               {invoices.length === 0 ? (
                 <tr>
-                  <td colSpan="8" className="text-center py-8 text-slate-400 italic">
+                  <td colSpan="8" className="text-center py-8 text-neutral-400 italic">
                     No invoices generated for this account yet.
                   </td>
                 </tr>
               ) : (
                 invoices.map((inv) => (
-                  <tr key={inv.id} className="hover:bg-slate-50/70">
-                    <td className="px-6 py-3.5 font-bold text-slate-900">
-                      {inv.invoice_number}
-                      {inv.is_overdue && (
-                        <span className="ml-2 text-[9px] px-1.5 py-0.5 bg-rose-100 text-rose-700 font-bold uppercase rounded">
-                          Overdue
-                        </span>
-                      )}
+                  <tr key={inv.id} className="hover:bg-[#F9FAFB] transition-colors">
+                    <td className="px-6 py-3.5 font-semibold text-neutral-900">
+                      <div className="flex items-center space-x-1.5">
+                        <span>{inv.invoice_number}</span>
+                        <CopyConfirm valueToCopy={inv.invoice_number} copyText="" />
+                        {inv.is_overdue && (
+                          <span className="ml-1 text-[9px] px-1.5 py-0.5 bg-rose-500/[0.1] text-rose-700 font-semibold uppercase rounded-full">
+                            Overdue
+                          </span>
+                        )}
+                      </div>
                     </td>
-                    <td className="px-6 py-3.5 text-slate-600">{formatDate(inv.issue_date)}</td>
-                    <td className="px-6 py-3.5 font-medium text-slate-700">{formatDate(inv.due_date)}</td>
-                    <td className="px-6 py-3.5 font-semibold text-slate-900">
+                    <td className="px-6 py-3.5 text-neutral-500">{formatDate(inv.issue_date)}</td>
+                    <td className="px-6 py-3.5 font-medium text-neutral-700">{formatDate(inv.due_date)}</td>
+                    <td className="px-6 py-3.5 font-semibold text-neutral-900">
                       {formatCurrency(inv.total_amount)}
                     </td>
-                    <td className="px-6 py-3.5 font-semibold text-emerald-600">
+                    <td className="px-6 py-3.5 font-semibold text-emerald-700">
                       {formatCurrency(inv.amount_paid)}
                     </td>
-                    <td className="px-6 py-3.5 font-bold text-rose-600">
+                    <td className="px-6 py-3.5 font-semibold text-rose-600">
                       {formatCurrency(inv.amount_remaining)}
                     </td>
                     <td className="px-6 py-3.5">
@@ -321,9 +343,9 @@ export default function CustomerPortal({ onOpenRecordPayment, onRecordPaymentFor
                     <td className="px-6 py-3.5 text-right">
                       <button
                         onClick={() => handleOpenInvoiceStatement(inv)}
-                        className="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-lg shadow-xs text-xs transition-colors inline-flex items-center"
+                        className="px-3 py-1 bg-[#F5F6F8] hover:bg-neutral-900 hover:text-white text-neutral-800 font-medium rounded-full text-[11px] transition-all inline-flex items-center border border-black/[0.04]"
                       >
-                        <Eye className="w-3.5 h-3.5 mr-1 text-slate-500" />
+                        <Eye className="w-3 h-3 mr-1" strokeWidth={1.75} />
                         View Statement
                       </button>
                     </td>
@@ -336,20 +358,22 @@ export default function CustomerPortal({ onOpenRecordPayment, onRecordPaymentFor
       </div>
 
       {/* 4. Payment History */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
-        <div className="px-6 py-4 border-b border-slate-100">
-          <h2 className="text-base font-bold text-slate-900 flex items-center">
-            <CreditCard className="w-4 h-4 mr-2 text-emerald-600" />
-            4. My Payment History
+      <div className="saas-card overflow-hidden">
+        <div className="px-6 py-4 border-b border-black/[0.05]">
+          <h2 className="text-sm font-semibold text-neutral-900 flex items-center tracking-tight">
+            <div className="w-6 h-6 rounded-full bg-[#F5F6F8] flex items-center justify-center mr-2 text-neutral-700">
+              <CreditCard className="w-3.5 h-3.5" strokeWidth={1.75} />
+            </div>
+            My Payment History
           </h2>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <p className="text-xs text-neutral-400 mt-0.5">
             Audit log of all payments verified and reconciled against your account by finance operations.
           </p>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase tracking-wider font-semibold">
+            <thead className="bg-[#FAFAFA] border-b border-black/[0.05] text-neutral-400 uppercase tracking-wider font-semibold text-[11px]">
               <tr>
                 <th className="px-6 py-3">Payment Reference</th>
                 <th className="px-6 py-3">Invoice Number</th>
@@ -360,28 +384,31 @@ export default function CustomerPortal({ onOpenRecordPayment, onRecordPaymentFor
                 <th className="px-6 py-3">Status</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-black/[0.04]">
               {payments.length === 0 ? (
                 <tr>
-                  <td colSpan="7" className="text-center py-8 text-slate-400 italic">
+                  <td colSpan="7" className="text-center py-8 text-neutral-400 italic">
                     No payment transactions recorded yet.
                   </td>
                 </tr>
               ) : (
                 payments.map((p) => (
-                  <tr key={p.id} className="hover:bg-slate-50/70">
-                    <td className="px-6 py-3.5 font-mono font-bold text-slate-800">
-                      {p.payment_reference}
+                  <tr key={p.id} className="hover:bg-[#F9FAFB] transition-colors">
+                    <td className="px-6 py-3.5 font-mono font-semibold text-neutral-800">
+                      <div className="flex items-center space-x-1.5">
+                        <span>{p.payment_reference}</span>
+                        <CopyConfirm valueToCopy={p.payment_reference} copyText="" />
+                      </div>
                     </td>
-                    <td className="px-6 py-3.5 text-slate-600">{p.invoice_number || '—'}</td>
-                    <td className="px-6 py-3.5 text-slate-700">
+                    <td className="px-6 py-3.5 text-neutral-500">{p.invoice_number || '—'}</td>
+                    <td className="px-6 py-3.5 text-neutral-700">
                       {formatPaymentMethod(p.payment_method)}
                     </td>
-                    <td className="px-6 py-3.5 font-bold text-emerald-600">
+                    <td className="px-6 py-3.5 font-semibold text-emerald-700">
                       {formatCurrency(p.amount)}
                     </td>
-                    <td className="px-6 py-3.5 text-slate-500">{formatDate(p.payment_date)}</td>
-                    <td className="px-6 py-3.5 text-slate-500 max-w-xs truncate">
+                    <td className="px-6 py-3.5 text-neutral-400">{formatDate(p.payment_date)}</td>
+                    <td className="px-6 py-3.5 text-neutral-400 max-w-xs truncate">
                       {p.notes || '—'}
                     </td>
                     <td className="px-6 py-3.5">
@@ -401,70 +428,69 @@ export default function CustomerPortal({ onOpenRecordPayment, onRecordPaymentFor
           isOpen={!!selectedInvoice}
           onClose={() => setSelectedInvoice(null)}
           title={`Statement: ${selectedInvoice.invoice_number}`}
-          size="lg"
         >
           <div className="space-y-5 text-xs">
             {/* Header Status Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-50 p-4 rounded-xl border border-slate-200">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-[#F8F9FA] p-4 rounded-[18px] border border-black/[0.04]">
               <div>
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Status</span>
+                <span className="text-[10px] font-semibold text-neutral-400 uppercase tracking-wider block mb-1">Status</span>
                 <StatusBadge status={selectedInvoice.status} />
               </div>
               <div>
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Issue Date</span>
-                <span className="font-semibold text-slate-800">{formatDate(selectedInvoice.issue_date)}</span>
+                <span className="text-[10px] font-semibold text-neutral-400 uppercase tracking-wider block mb-1">Issue Date</span>
+                <span className="font-semibold text-neutral-800">{formatDate(selectedInvoice.issue_date)}</span>
               </div>
               <div>
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Due Date</span>
-                <span className={`font-semibold ${selectedInvoice.is_overdue ? 'text-rose-600' : 'text-slate-800'}`}>
+                <span className="text-[10px] font-semibold text-neutral-400 uppercase tracking-wider block mb-1">Due Date</span>
+                <span className={`font-semibold ${selectedInvoice.is_overdue ? 'text-rose-600' : 'text-neutral-800'}`}>
                   {formatDate(selectedInvoice.due_date)}
                 </span>
               </div>
               <div>
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Balance Remaining</span>
+                <span className="text-[10px] font-semibold text-neutral-400 uppercase tracking-wider block mb-1">Balance Remaining</span>
                 <span className="font-bold text-rose-600 text-sm">{formatCurrency(selectedInvoice.amount_remaining)}</span>
               </div>
             </div>
 
             {/* Financial Summary */}
-            <div className="bg-white border border-slate-200 rounded-xl p-4 space-y-2">
-              <div className="flex justify-between text-slate-600">
+            <div className="bg-white border border-black/[0.06] rounded-[18px] p-4 space-y-2">
+              <div className="flex justify-between text-neutral-600">
                 <span>Subtotal:</span>
                 <span>{formatCurrency(selectedInvoice.subtotal)}</span>
               </div>
               {Number(selectedInvoice.tax_total) > 0 && (
-                <div className="flex justify-between text-slate-600">
+                <div className="flex justify-between text-neutral-600">
                   <span>Tax:</span>
                   <span>{formatCurrency(selectedInvoice.tax_total)}</span>
                 </div>
               )}
               {Number(selectedInvoice.discount_total) > 0 && (
-                <div className="flex justify-between text-emerald-600">
+                <div className="flex justify-between text-emerald-700 font-medium">
                   <span>Discount Applied:</span>
                   <span>-{formatCurrency(selectedInvoice.discount_total)}</span>
                 </div>
               )}
-              <div className="flex justify-between font-bold text-sm text-slate-900 pt-2 border-t border-slate-100">
+              <div className="flex justify-between font-bold text-sm text-neutral-900 pt-2 border-t border-black/[0.05]">
                 <span>Total Amount Invoiced:</span>
                 <span>{formatCurrency(selectedInvoice.total_amount)}</span>
               </div>
-              <div className="flex justify-between text-emerald-600 font-semibold">
+              <div className="flex justify-between text-emerald-700 font-semibold">
                 <span>Total Reconciled by Finance:</span>
                 <span>{formatCurrency(selectedInvoice.amount_paid)}</span>
               </div>
-              <div className="flex justify-between text-rose-600 font-bold text-sm pt-1 border-t border-dashed border-slate-200">
+              <div className="flex justify-between text-rose-600 font-bold text-sm pt-1 border-t border-dashed border-neutral-200">
                 <span>Outstanding Balance Due:</span>
                 <span>{formatCurrency(selectedInvoice.amount_remaining)}</span>
               </div>
             </div>
 
             {/* Remittance & Payment Policy Notice */}
-            <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-amber-900 flex items-start space-x-3">
-              <Info className="w-5 h-5 flex-shrink-0 text-amber-600 mt-0.5" />
+            <div className="bg-amber-500/[0.08] border border-amber-500/20 rounded-[18px] p-4 text-amber-900 flex items-start space-x-3">
+              <Info className="w-4 h-4 flex-shrink-0 text-amber-600 mt-0.5" strokeWidth={1.75} />
               <div className="text-[11px] leading-relaxed">
-                <span className="font-bold">Payment Remittance Notice: </span>
+                <span className="font-semibold">Payment Remittance Notice: </span>
                 All manual payments (bank transfers, checks, or corporate ACH) are verified and reconciled by SUBNEX Finance Operations. Please remit payments quoting invoice number{' '}
-                <span className="font-mono font-bold text-amber-950">{selectedInvoice.invoice_number}</span>. Once verified, your account ledger will automatically reflect the payment.
+                <span className="font-mono font-bold text-amber-950">{selectedInvoice.invoice_number}</span>.
               </div>
             </div>
 
@@ -473,7 +499,7 @@ export default function CustomerPortal({ onOpenRecordPayment, onRecordPaymentFor
               <button
                 type="button"
                 onClick={() => setSelectedInvoice(null)}
-                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-xs transition-colors"
+                className="px-4 py-2 bg-neutral-900 hover:bg-black text-white font-semibold rounded-full text-xs shadow-xs transition-all active:scale-[0.98]"
               >
                 Close Statement
               </button>

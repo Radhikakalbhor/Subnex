@@ -3,6 +3,9 @@ import api from '../../services/api';
 import StatCard from '../common/StatCard';
 import LoadingSpinner from '../common/LoadingSpinner';
 import { StatusBadge } from '../common/Badge';
+import { CreditUsageCard } from '../watermelon/CreditUsageCard';
+import { CopyConfirm } from '../watermelon/CopyConfirm';
+import { ShimmerButton } from '../watermelon/ShimmerButton';
 import { formatCurrency, formatDate, formatDateTime, formatPaymentMethod } from '../../utils/formatters';
 import {
   Layers,
@@ -66,12 +69,12 @@ export default function AdminDashboard({ onSelectView, onRecordPaymentForInvoice
 
   if (error && !stats) {
     return (
-      <div className="bg-rose-50 border border-rose-200 text-rose-800 p-6 rounded-2xl">
-        <h3 className="font-bold text-sm mb-1">Failed to Load Dashboard</h3>
-        <p className="text-xs">{error}</p>
+      <div className="bg-rose-500/[0.08] border border-rose-500/20 text-rose-700 p-6 rounded-[22px]">
+        <h3 className="font-semibold text-sm mb-1">Failed to Load Dashboard</h3>
+        <p className="text-xs text-rose-600/90">{error}</p>
         <button
           onClick={fetchDashboardStats}
-          className="mt-3 px-3 py-1.5 bg-rose-600 text-white text-xs font-semibold rounded-lg hover:bg-rose-700"
+          className="mt-3 px-3.5 py-1.5 bg-rose-600 text-white text-xs font-semibold rounded-full hover:bg-rose-700 transition-colors"
         >
           Retry
         </button>
@@ -88,35 +91,35 @@ export default function AdminDashboard({ onSelectView, onRecordPaymentForInvoice
   return (
     <div className="space-y-6">
       {/* Top Banner & Filter Controls */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-4 border-b border-slate-100">
+      <div className="saas-card p-6 sm:p-7">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-5 border-b border-black/[0.05]">
           <div>
-            <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+            <h1 className="text-xl sm:text-2xl font-bold text-neutral-900 tracking-tight">
               Executive & Finance Dashboard
             </h1>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <p className="text-xs text-neutral-500 mt-1 font-normal">
               Live transactional ledger, active subscription tracking & revenue reconciliations.
             </p>
           </div>
           <button
             onClick={fetchDashboardStats}
-            className="self-start lg:self-auto inline-flex items-center px-3 py-1.5 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
+            className="self-start lg:self-auto inline-flex items-center px-3.5 py-1.5 text-xs font-medium text-neutral-800 bg-[#F5F6F8] hover:bg-[#EAEBED] rounded-full border border-black/[0.04] transition-all"
           >
-            <RefreshCw className={`w-3.5 h-3.5 mr-1.5 ${loading ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`w-3.5 h-3.5 mr-1.5 ${loading ? 'animate-spin' : ''}`} strokeWidth={1.75} />
             Refresh Data
           </button>
         </div>
 
-        {/* Filters Bar (Requirement 7: Filters by date, status, customer) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-4">
+        {/* Filters Bar */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 pt-5">
           <div>
-            <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">
+            <label className="block text-[11px] font-semibold text-neutral-400 uppercase tracking-wider mb-1.5">
               Customer
             </label>
             <select
               value={customerFilter}
               onChange={(e) => setCustomerFilter(e.target.value)}
-              className="w-full text-xs border border-slate-200 rounded-lg p-2 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-indigo-500"
+              className="saas-input"
             >
               <option value="">All Customers</option>
               {(filterOptions.customers || []).map((c) => (
@@ -128,13 +131,13 @@ export default function AdminDashboard({ onSelectView, onRecordPaymentForInvoice
           </div>
 
           <div>
-            <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">
+            <label className="block text-[11px] font-semibold text-neutral-400 uppercase tracking-wider mb-1.5">
               Subscription Status
             </label>
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-full text-xs border border-slate-200 rounded-lg p-2 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-indigo-500"
+              className="saas-input"
             >
               <option value="all">All Statuses</option>
               <option value="active">Active</option>
@@ -146,26 +149,26 @@ export default function AdminDashboard({ onSelectView, onRecordPaymentForInvoice
           </div>
 
           <div>
-            <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">
+            <label className="block text-[11px] font-semibold text-neutral-400 uppercase tracking-wider mb-1.5">
               From Date
             </label>
             <input
               type="date"
               value={fromDate}
               onChange={(e) => setFromDate(e.target.value)}
-              className="w-full text-xs border border-slate-200 rounded-lg p-2 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-indigo-500"
+              className="saas-input"
             />
           </div>
 
           <div>
-            <div className="flex justify-between items-center mb-1">
-              <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+            <div className="flex justify-between items-center mb-1.5">
+              <label className="block text-[11px] font-semibold text-neutral-400 uppercase tracking-wider">
                 To Date
               </label>
               {(fromDate || toDate || statusFilter !== 'all' || customerFilter) && (
                 <button
                   onClick={handleResetFilters}
-                  className="text-[10px] text-indigo-600 hover:text-indigo-800 font-bold"
+                  className="text-[10px] text-neutral-900 hover:text-black font-semibold underline"
                 >
                   Reset
                 </button>
@@ -175,17 +178,16 @@ export default function AdminDashboard({ onSelectView, onRecordPaymentForInvoice
               type="date"
               value={toDate}
               onChange={(e) => setToDate(e.target.value)}
-              className="w-full text-xs border border-slate-200 rounded-lg p-2 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-indigo-500"
+              className="saas-input"
             />
           </div>
         </div>
       </div>
 
-      {/* 4 Primary KPIs (Requirements 1, 2, 3, 4) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* KPI 1: Total Active Subscriptions */}
+      {/* 4 Primary KPIs */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
         <StatCard
-          title="1. Active Subscriptions"
+          title="Active Subscriptions"
           value={kpis.active_subscriptions || 0}
           subtext={`Across ${kpis.total_subscriptions || 0} total subscriptions`}
           icon={Layers}
@@ -193,27 +195,24 @@ export default function AdminDashboard({ onSelectView, onRecordPaymentForInvoice
           badgeText="Active"
         />
 
-        {/* KPI 2: Total Revenue Received */}
         <StatCard
-          title="2. Total Revenue Received"
+          title="Total Revenue Received"
           value={formatCurrency(kpis.total_revenue || 0)}
-          subtext={`${kpis.total_successful_payments || 0} successful payment transactions`}
+          subtext={`${kpis.total_successful_payments || 0} successful transactions`}
           icon={DollarSign}
           color="emerald"
         />
 
-        {/* KPI 3: Outstanding Payment Amount */}
         <StatCard
-          title="3. Outstanding Balance"
+          title="Outstanding Balance"
           value={formatCurrency(kpis.total_outstanding || 0)}
           subtext={`Invoiced: ${formatCurrency(kpis.total_invoiced || 0)}`}
           icon={TrendingUp}
           color="amber"
         />
 
-        {/* KPI 4: Number of Overdue Invoices */}
         <StatCard
-          title="4. Overdue Invoices"
+          title="Overdue Invoices"
           value={kpis.overdue_invoices_count || 0}
           subtext={`Unpaid: ${formatCurrency(kpis.total_overdue_amount || 0)}`}
           icon={AlertTriangle}
@@ -223,128 +222,142 @@ export default function AdminDashboard({ onSelectView, onRecordPaymentForInvoice
         />
       </div>
 
-      {/* Subscription & Payment Analytics Breakdown (Requirement 5 & 6) */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* 5. Subscription Statistics */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-bold text-sm text-slate-900 flex items-center">
-              <PieChart className="w-4 h-4 mr-2 text-indigo-600" />
-              5. Subscription Statistics
-            </h3>
-            <span className="text-[11px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full">
-              MRR: {formatCurrency(kpis.mrr_estimate || 0)}
-            </span>
-          </div>
+      {/* Revenue Realization Meter (Watermelon UI Component) */}
+      <CreditUsageCard
+        title="Real-Time Revenue Realization & Invoiced Collection"
+        collectedAmount={kpis.total_revenue || 0}
+        invoicedTotal={kpis.total_invoiced || 0}
+        outstandingAmount={kpis.total_outstanding || 0}
+      />
 
-          <div className="space-y-2.5 text-xs">
-            <div className="flex items-center justify-between p-2 rounded-lg bg-emerald-50/50 border border-emerald-100">
-              <span className="font-medium text-emerald-800">Active</span>
-              <span className="font-bold text-emerald-700">{subStats.active || 0}</span>
-            </div>
-            <div className="flex items-center justify-between p-2 rounded-lg bg-amber-50/50 border border-amber-100">
-              <span className="font-medium text-amber-800">Paused</span>
-              <span className="font-bold text-amber-700">{subStats.paused || 0}</span>
-            </div>
-            <div className="flex items-center justify-between p-2 rounded-lg bg-rose-50/50 border border-rose-100">
-              <span className="font-medium text-rose-800">Past Due</span>
-              <span className="font-bold text-rose-700">{subStats.past_due || 0}</span>
-            </div>
-            <div className="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-slate-100">
-              <span className="font-medium text-slate-700">Closed / Expired</span>
-              <span className="font-bold text-slate-800">
-                {(subStats.closed || 0) + (subStats.expired || 0)}
+      {/* Subscription & Payment Analytics Breakdown */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        {/* Subscription Statistics */}
+        <div className="saas-card p-6 flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-semibold text-sm text-neutral-900 flex items-center tracking-tight">
+                <div className="w-6 h-6 rounded-full bg-[#F5F6F8] flex items-center justify-center mr-2 text-neutral-700">
+                  <PieChart className="w-3.5 h-3.5" strokeWidth={1.75} />
+                </div>
+                Subscription Statistics
+              </h3>
+              <span className="text-[11px] font-medium text-neutral-700 bg-[#F5F6F8] px-2.5 py-0.5 rounded-full border border-black/[0.04]">
+                MRR: {formatCurrency(kpis.mrr_estimate || 0)}
               </span>
             </div>
-            <div className="flex items-center justify-between p-2 rounded-lg bg-sky-50/50 border border-sky-100">
-              <span className="font-medium text-sky-800">Quotations / Drafts</span>
-              <span className="font-bold text-sky-700">
-                {(subStats.quotation || 0) + (subStats.draft || 0)}
-              </span>
-            </div>
-          </div>
-        </div>
 
-        {/* 6a. Payment Method Distribution */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-bold text-sm text-slate-900 flex items-center">
-              <CreditCard className="w-4 h-4 mr-2 text-emerald-600" />
-              6a. Payment Methods
-            </h3>
-            <span className="text-[11px] font-semibold text-slate-500">
-              Total: {formatCurrency(kpis.total_revenue || 0)}
-            </span>
-          </div>
-
-          <div className="space-y-2 text-xs">
-            <div className="flex justify-between items-center py-1.5 border-b border-slate-100">
-              <span className="text-slate-600">Bank Transfer / Wire</span>
-              <span className="font-bold text-slate-900">
-                {formatCurrency(payBreakdown.bank_transfer || 0)}
-              </span>
-            </div>
-            <div className="flex justify-between items-center py-1.5 border-b border-slate-100">
-              <span className="text-slate-600">Credit Card</span>
-              <span className="font-bold text-slate-900">
-                {formatCurrency(payBreakdown.credit_card || 0)}
-              </span>
-            </div>
-            <div className="flex justify-between items-center py-1.5 border-b border-slate-100">
-              <span className="text-slate-600">UPI Instant</span>
-              <span className="font-bold text-slate-900">
-                {formatCurrency(payBreakdown.upi || 0)}
-              </span>
-            </div>
-            <div className="flex justify-between items-center py-1.5 border-b border-slate-100">
-              <span className="text-slate-600">Cheque / Check</span>
-              <span className="font-bold text-slate-900">
-                {formatCurrency(payBreakdown.check || 0)}
-              </span>
-            </div>
-            <div className="flex justify-between items-center py-1.5 border-b border-slate-100">
-              <span className="text-slate-600">Cash Settlement</span>
-              <span className="font-bold text-slate-900">
-                {formatCurrency(payBreakdown.cash || 0)}
-              </span>
-            </div>
-            <div className="flex justify-between items-center py-1.5">
-              <span className="text-slate-600">Manual Adjustments</span>
-              <span className="font-bold text-slate-900">
-                {formatCurrency(payBreakdown.manual || 0)}
-              </span>
+            <div className="space-y-2 text-xs">
+              <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#F8F9FA] border border-black/[0.03]">
+                <span className="font-medium text-neutral-700">Active</span>
+                <span className="font-semibold text-neutral-900">{subStats.active || 0}</span>
+              </div>
+              <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#F8F9FA] border border-black/[0.03]">
+                <span className="font-medium text-neutral-700">Paused</span>
+                <span className="font-semibold text-neutral-900">{subStats.paused || 0}</span>
+              </div>
+              <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#F8F9FA] border border-black/[0.03]">
+                <span className="font-medium text-neutral-700">Past Due</span>
+                <span className="font-semibold text-neutral-900">{subStats.past_due || 0}</span>
+              </div>
+              <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#F8F9FA] border border-black/[0.03]">
+                <span className="font-medium text-neutral-700">Closed / Expired</span>
+                <span className="font-semibold text-neutral-900">
+                  {(subStats.closed || 0) + (subStats.expired || 0)}
+                </span>
+              </div>
+              <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#F8F9FA] border border-black/[0.03]">
+                <span className="font-medium text-neutral-700">Quotations / Drafts</span>
+                <span className="font-semibold text-neutral-900">
+                  {(subStats.quotation || 0) + (subStats.draft || 0)}
+                </span>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* 6b. Invoice Status Breakdown */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-bold text-sm text-slate-900 flex items-center">
-              <FileText className="w-4 h-4 mr-2 text-blue-600" />
-              6b. Invoices Status
-            </h3>
-            <span className="text-[11px] font-semibold text-slate-500">
-              Count: {kpis.total_invoices || 0}
-            </span>
-          </div>
+        {/* Payment Method Distribution */}
+        <div className="saas-card p-6 flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-semibold text-sm text-neutral-900 flex items-center tracking-tight">
+                <div className="w-6 h-6 rounded-full bg-[#F5F6F8] flex items-center justify-center mr-2 text-neutral-700">
+                  <CreditCard className="w-3.5 h-3.5" strokeWidth={1.75} />
+                </div>
+                Payment Methods
+              </h3>
+              <span className="text-[11px] font-medium text-neutral-500">
+                Total: {formatCurrency(kpis.total_revenue || 0)}
+              </span>
+            </div>
 
-          <div className="space-y-2.5 text-xs">
-            <div className="flex items-center justify-between p-2 rounded-lg bg-emerald-50 border border-emerald-100">
-              <span className="font-medium text-emerald-800">Fully Paid</span>
-              <span className="font-bold text-emerald-700">{invBreakdown.paid || 0}</span>
+            <div className="space-y-2 text-xs">
+              <div className="flex justify-between items-center py-2 px-2.5 rounded-xl bg-[#F8F9FA] border border-black/[0.03]">
+                <span className="text-neutral-600">Bank Transfer / Wire</span>
+                <span className="font-semibold text-neutral-900">
+                  {formatCurrency(payBreakdown.bank_transfer || 0)}
+                </span>
+              </div>
+              <div className="flex justify-between items-center py-2 px-2.5 rounded-xl bg-[#F8F9FA] border border-black/[0.03]">
+                <span className="text-neutral-600">Credit Card</span>
+                <span className="font-semibold text-neutral-900">
+                  {formatCurrency(payBreakdown.credit_card || 0)}
+                </span>
+              </div>
+              <div className="flex justify-between items-center py-2 px-2.5 rounded-xl bg-[#F8F9FA] border border-black/[0.03]">
+                <span className="text-neutral-600">UPI Instant</span>
+                <span className="font-semibold text-neutral-900">
+                  {formatCurrency(payBreakdown.upi || 0)}
+                </span>
+              </div>
+              <div className="flex justify-between items-center py-2 px-2.5 rounded-xl bg-[#F8F9FA] border border-black/[0.03]">
+                <span className="text-neutral-600">Cheque / Check</span>
+                <span className="font-semibold text-neutral-900">
+                  {formatCurrency(payBreakdown.check || 0)}
+                </span>
+              </div>
+              <div className="flex justify-between items-center py-2 px-2.5 rounded-xl bg-[#F8F9FA] border border-black/[0.03]">
+                <span className="text-neutral-600">Cash Settlement</span>
+                <span className="font-semibold text-neutral-900">
+                  {formatCurrency(payBreakdown.cash || 0)}
+                </span>
+              </div>
             </div>
-            <div className="flex items-center justify-between p-2 rounded-lg bg-blue-50 border border-blue-100">
-              <span className="font-medium text-blue-800">Confirmed / Open</span>
-              <span className="font-bold text-blue-700">{invBreakdown.open || 0}</span>
+          </div>
+        </div>
+
+        {/* Invoice Status Breakdown */}
+        <div className="saas-card p-6 flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-semibold text-sm text-neutral-900 flex items-center tracking-tight">
+                <div className="w-6 h-6 rounded-full bg-[#F5F6F8] flex items-center justify-center mr-2 text-neutral-700">
+                  <FileText className="w-3.5 h-3.5" strokeWidth={1.75} />
+                </div>
+                Invoices Status
+              </h3>
+              <span className="text-[11px] font-medium text-neutral-500">
+                Count: {kpis.total_invoices || 0}
+              </span>
             </div>
-            <div className="flex items-center justify-between p-2 rounded-lg bg-rose-50 border border-rose-100">
-              <span className="font-medium text-rose-800 font-bold">Past Due (Overdue)</span>
-              <span className="font-bold text-rose-700">{invBreakdown.overdue || 0}</span>
-            </div>
-            <div className="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-slate-100">
-              <span className="font-medium text-slate-700">Draft Invoices</span>
-              <span className="font-bold text-slate-800">{invBreakdown.draft || 0}</span>
+
+            <div className="space-y-2 text-xs">
+              <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#F8F9FA] border border-black/[0.03]">
+                <span className="font-medium text-neutral-700">Fully Paid</span>
+                <span className="font-semibold text-neutral-900">{invBreakdown.paid || 0}</span>
+              </div>
+              <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#F8F9FA] border border-black/[0.03]">
+                <span className="font-medium text-neutral-700">Confirmed / Open</span>
+                <span className="font-semibold text-neutral-900">{invBreakdown.open || 0}</span>
+              </div>
+              <div className="flex items-center justify-between p-2.5 rounded-xl bg-rose-500/[0.06] border border-rose-500/15">
+                <span className="font-medium text-rose-700">Past Due (Overdue)</span>
+                <span className="font-semibold text-rose-800">{invBreakdown.overdue || 0}</span>
+              </div>
+              <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#F8F9FA] border border-black/[0.03]">
+                <span className="font-medium text-neutral-700">Draft Invoices</span>
+                <span className="font-semibold text-neutral-900">{invBreakdown.draft || 0}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -353,64 +366,68 @@ export default function AdminDashboard({ onSelectView, onRecordPaymentForInvoice
       {/* Recent Ledger Tables (Invoices & Payments) */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Invoices */}
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
-          <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
-            <h3 className="font-bold text-sm text-slate-900">Recent Invoices</h3>
+        <div className="saas-card overflow-hidden">
+          <div className="px-6 py-4 border-b border-black/[0.05] flex items-center justify-between bg-white">
+            <h3 className="font-semibold text-sm text-neutral-900 tracking-tight">Recent Invoices</h3>
             <button
               onClick={() => onSelectView('invoices')}
-              className="inline-flex items-center text-xs font-bold text-indigo-600 hover:text-indigo-800"
+              className="inline-flex items-center text-xs font-semibold text-neutral-900 hover:text-black transition-colors"
             >
-              View All <ArrowRight className="w-3.5 h-3.5 ml-1" />
+              View All <ArrowRight className="w-3.5 h-3.5 ml-1" strokeWidth={1.75} />
             </button>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase tracking-wider font-semibold">
+              <thead className="bg-[#FAFAFA] border-b border-black/[0.05] text-neutral-400 uppercase tracking-wider font-semibold text-[11px]">
                 <tr>
-                  <th className="px-4 py-2.5">Invoice #</th>
-                  <th className="px-4 py-2.5">Customer</th>
-                  <th className="px-4 py-2.5">Total</th>
-                  <th className="px-4 py-2.5">Remaining</th>
-                  <th className="px-4 py-2.5">Status</th>
-                  <th className="px-4 py-2.5 text-right">Action</th>
+                  <th className="px-5 py-3">Invoice #</th>
+                  <th className="px-5 py-3">Customer</th>
+                  <th className="px-5 py-3">Total</th>
+                  <th className="px-5 py-3">Remaining</th>
+                  <th className="px-5 py-3">Status</th>
+                  <th className="px-5 py-3 text-right">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-black/[0.04]">
                 {(stats?.recent_invoices || []).length === 0 ? (
                   <tr>
-                    <td colSpan="6" className="text-center py-6 text-slate-400 italic">
+                    <td colSpan="6" className="text-center py-8 text-neutral-400 italic">
                       No invoices found.
                     </td>
                   </tr>
                 ) : (
                   (stats?.recent_invoices || []).map((inv) => (
-                    <tr key={inv.id} className="hover:bg-slate-50/70">
-                      <td className="px-4 py-3 font-semibold text-slate-900">
-                        {inv.invoice_number}
-                        {inv.is_overdue && (
-                          <span className="ml-1.5 text-[9px] px-1.5 py-0.5 bg-rose-100 text-rose-700 rounded font-bold uppercase">
-                            Overdue
-                          </span>
-                        )}
+                    <tr key={inv.id} className="hover:bg-[#F9FAFB] transition-colors">
+                      <td className="px-5 py-3.5 font-semibold text-neutral-900">
+                        <div className="flex items-center space-x-1.5">
+                          <span>{inv.invoice_number}</span>
+                          <CopyConfirm valueToCopy={inv.invoice_number} copyText="" />
+                          {inv.is_overdue && (
+                            <span className="ml-1 text-[9px] px-1.5 py-0.5 bg-rose-500/[0.1] text-rose-700 rounded-full font-semibold uppercase">
+                              Overdue
+                            </span>
+                          )}
+                        </div>
                       </td>
-                      <td className="px-4 py-3 text-slate-600">{inv.customer_name}</td>
-                      <td className="px-4 py-3 font-medium text-slate-900">
+                      <td className="px-5 py-3.5 text-neutral-600">{inv.customer_name}</td>
+                      <td className="px-5 py-3.5 font-medium text-neutral-900">
                         {formatCurrency(inv.total_amount)}
                       </td>
-                      <td className="px-4 py-3 font-bold text-rose-600">
+                      <td className="px-5 py-3.5 font-semibold text-rose-600">
                         {formatCurrency(inv.amount_remaining)}
                       </td>
-                      <td className="px-4 py-3">
+                      <td className="px-5 py-3.5">
                         <StatusBadge status={inv.status} />
                       </td>
-                      <td className="px-4 py-3 text-right">
+                      <td className="px-5 py-3.5 text-right">
                         {inv.amount_remaining > 0 && inv.status !== 'void' && (
-                          <button
+                          <ShimmerButton
                             onClick={() => onRecordPaymentForInvoice(inv)}
-                            className="px-2.5 py-1 text-[11px] font-bold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-md transition-colors"
+                            size="sm"
+                            className="px-3 py-1 text-[11px]"
                           >
                             Pay
-                          </button>
+                          </ShimmerButton>
                         )}
                       </td>
                     </tr>
@@ -422,50 +439,53 @@ export default function AdminDashboard({ onSelectView, onRecordPaymentForInvoice
         </div>
 
         {/* Recent Payments */}
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
-          <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
-            <h3 className="font-bold text-sm text-slate-900">Recent Payment Transactions</h3>
+        <div className="saas-card overflow-hidden">
+          <div className="px-6 py-4 border-b border-black/[0.05] flex items-center justify-between bg-white">
+            <h3 className="font-semibold text-sm text-neutral-900 tracking-tight">Recent Payment Transactions</h3>
             <button
               onClick={() => onSelectView('payments')}
-              className="inline-flex items-center text-xs font-bold text-indigo-600 hover:text-indigo-800"
+              className="inline-flex items-center text-xs font-semibold text-neutral-900 hover:text-black transition-colors"
             >
-              View All <ArrowRight className="w-3.5 h-3.5 ml-1" />
+              View All <ArrowRight className="w-3.5 h-3.5 ml-1" strokeWidth={1.75} />
             </button>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase tracking-wider font-semibold">
+              <thead className="bg-[#FAFAFA] border-b border-black/[0.05] text-neutral-400 uppercase tracking-wider font-semibold text-[11px]">
                 <tr>
-                  <th className="px-4 py-2.5">Reference</th>
-                  <th className="px-4 py-2.5">Customer</th>
-                  <th className="px-4 py-2.5">Method</th>
-                  <th className="px-4 py-2.5">Amount</th>
-                  <th className="px-4 py-2.5">Date</th>
-                  <th className="px-4 py-2.5">Status</th>
+                  <th className="px-5 py-3">Reference</th>
+                  <th className="px-5 py-3">Customer</th>
+                  <th className="px-5 py-3">Method</th>
+                  <th className="px-5 py-3">Amount</th>
+                  <th className="px-5 py-3">Date</th>
+                  <th className="px-5 py-3">Status</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-black/[0.04]">
                 {(stats?.recent_payments || []).length === 0 ? (
                   <tr>
-                    <td colSpan="6" className="text-center py-6 text-slate-400 italic">
+                    <td colSpan="6" className="text-center py-8 text-neutral-400 italic">
                       No payments recorded yet.
                     </td>
                   </tr>
                 ) : (
                   (stats?.recent_payments || []).map((pay) => (
-                    <tr key={pay.id} className="hover:bg-slate-50/70">
-                      <td className="px-4 py-3 font-mono text-[11px] font-bold text-slate-800">
-                        {pay.payment_reference}
+                    <tr key={pay.id} className="hover:bg-[#F9FAFB] transition-colors">
+                      <td className="px-5 py-3.5 font-mono font-semibold text-neutral-800">
+                        <div className="flex items-center space-x-1.5">
+                          <span>{pay.payment_reference}</span>
+                          <CopyConfirm valueToCopy={pay.payment_reference} copyText="" />
+                        </div>
                       </td>
-                      <td className="px-4 py-3 text-slate-600">{pay.customer_name}</td>
-                      <td className="px-4 py-3 text-slate-600">
+                      <td className="px-5 py-3.5 text-neutral-600">{pay.customer_name}</td>
+                      <td className="px-5 py-3.5 text-neutral-600">
                         {formatPaymentMethod(pay.payment_method)}
                       </td>
-                      <td className="px-4 py-3 font-bold text-emerald-600">
+                      <td className="px-5 py-3.5 font-semibold text-emerald-700">
                         {formatCurrency(pay.amount)}
                       </td>
-                      <td className="px-4 py-3 text-slate-500">{formatDate(pay.payment_date)}</td>
-                      <td className="px-4 py-3">
+                      <td className="px-5 py-3.5 text-neutral-400">{formatDate(pay.payment_date)}</td>
+                      <td className="px-5 py-3.5">
                         <StatusBadge status={pay.status} />
                       </td>
                     </tr>
@@ -479,4 +499,3 @@ export default function AdminDashboard({ onSelectView, onRecordPaymentForInvoice
     </div>
   );
 }
-

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Modal from '../common/Modal';
+import { ShimmerButton } from '../watermelon/ShimmerButton';
 import api from '../../services/api';
 import { formatCurrency } from '../../utils/formatters';
 import { CreditCard, CheckCircle2, AlertCircle } from 'lucide-react';
@@ -116,15 +117,17 @@ export default function RecordPaymentModal({
     >
       {successMsg ? (
         <div className="flex flex-col items-center justify-center p-6 text-center text-emerald-600 animate-fadeIn">
-          <CheckCircle2 className="w-12 h-12 mb-3 text-emerald-500" />
-          <h4 className="font-bold text-base text-slate-900">{successMsg}</h4>
-          <p className="text-xs text-slate-500 mt-1">Updating records and balances...</p>
+          <div className="w-12 h-12 rounded-full bg-emerald-500/[0.1] text-emerald-600 flex items-center justify-center mb-3">
+            <CheckCircle2 className="w-6 h-6" strokeWidth={2} />
+          </div>
+          <h4 className="font-semibold text-base text-neutral-900 tracking-tight">{successMsg}</h4>
+          <p className="text-xs text-neutral-400 mt-1">Updating records and balances...</p>
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
-            <div className="p-3 bg-rose-50 border border-rose-200 text-rose-700 text-xs rounded-lg flex items-start space-x-2">
-              <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+            <div className="p-3 bg-rose-500/[0.08] border border-rose-500/20 text-rose-700 text-xs rounded-xl flex items-start space-x-2">
+              <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" strokeWidth={2} />
               <span>{error}</span>
             </div>
           )}
@@ -132,7 +135,7 @@ export default function RecordPaymentModal({
           {/* Invoice Selection */}
           {!invoice && (
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label className="block text-[11px] font-semibold text-neutral-400 uppercase tracking-wider mb-1.5">
                 Select Invoice to Settle
               </label>
               {invoicesList.length === 0 ? (
@@ -141,7 +144,7 @@ export default function RecordPaymentModal({
                 <select
                   value={selectedInvoiceId}
                   onChange={(e) => handleInvoiceChange(e.target.value)}
-                  className="w-full text-xs border border-slate-300 rounded-lg p-2.5 bg-white focus:ring-2 focus:ring-indigo-500"
+                  className="saas-input"
                 >
                   {invoicesList.map((inv) => (
                     <option key={inv.id} value={inv.id}>
@@ -156,20 +159,20 @@ export default function RecordPaymentModal({
 
           {/* Balance Preview Card */}
           {selectedInvoice && (
-            <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs space-y-1">
-              <div className="flex justify-between text-slate-500">
+            <div className="bg-[#F8F9FA] border border-black/[0.04] rounded-[18px] p-4 text-xs space-y-1.5">
+              <div className="flex justify-between text-neutral-500">
                 <span>Invoice Total:</span>
-                <span className="font-semibold text-slate-900">
+                <span className="font-medium text-neutral-900">
                   {formatCurrency(selectedInvoice.total_amount)}
                 </span>
               </div>
-              <div className="flex justify-between text-slate-500">
+              <div className="flex justify-between text-neutral-500">
                 <span>Already Paid:</span>
-                <span className="font-semibold text-emerald-600">
+                <span className="font-medium text-emerald-700">
                   {formatCurrency(selectedInvoice.amount_paid)}
                 </span>
               </div>
-              <div className="flex justify-between text-slate-800 font-bold border-t border-slate-200 pt-1">
+              <div className="flex justify-between text-neutral-900 font-bold border-t border-black/[0.05] pt-1.5">
                 <span>Remaining Balance:</span>
                 <span className="text-rose-600">
                   {formatCurrency(selectedInvoice.amount_remaining)}
@@ -180,13 +183,13 @@ export default function RecordPaymentModal({
 
           {/* Payment Method */}
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
+            <label className="block text-[11px] font-semibold text-neutral-400 uppercase tracking-wider mb-1.5">
               Payment Method
             </label>
             <select
               value={paymentMethod}
               onChange={(e) => setPaymentMethod(e.target.value)}
-              className="w-full text-xs border border-slate-300 rounded-lg p-2.5 bg-white focus:ring-2 focus:ring-indigo-500"
+              className="saas-input"
             >
               <option value="bank_transfer">Bank Transfer / Wire</option>
               <option value="credit_card">Credit Card (Simulated Direct)</option>
@@ -199,22 +202,22 @@ export default function RecordPaymentModal({
 
           {/* Payment Amount */}
           <div>
-            <div className="flex justify-between items-center mb-1">
-              <label className="block text-xs font-semibold text-slate-700">
+            <div className="flex justify-between items-center mb-1.5">
+              <label className="block text-[11px] font-semibold text-neutral-400 uppercase tracking-wider">
                 Amount to Record
               </label>
               {selectedInvoice && (
                 <button
                   type="button"
                   onClick={() => setAmount(String(selectedInvoice.amount_remaining))}
-                  className="text-[11px] text-indigo-600 hover:text-indigo-800 font-medium"
+                  className="text-[11px] text-neutral-900 hover:text-black font-semibold underline"
                 >
                   Set Full Balance ({formatCurrency(selectedInvoice.amount_remaining)})
                 </button>
               )}
             </div>
             <div className="relative">
-              <span className="absolute left-3 top-2.5 text-slate-400 text-xs font-bold">$</span>
+              <span className="absolute left-3.5 top-2.5 text-neutral-400 text-xs font-semibold">$</span>
               <input
                 type="number"
                 step="0.01"
@@ -223,27 +226,27 @@ export default function RecordPaymentModal({
                 onChange={(e) => setAmount(e.target.value)}
                 placeholder="0.00"
                 required
-                className="w-full pl-7 pr-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                className="saas-input pl-8"
               />
             </div>
           </div>
 
           {/* Payment Date */}
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
+            <label className="block text-[11px] font-semibold text-neutral-400 uppercase tracking-wider mb-1.5">
               Payment Date
             </label>
             <input
               type="date"
               value={paymentDate}
               onChange={(e) => setPaymentDate(e.target.value)}
-              className="w-full p-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+              className="saas-input"
             />
           </div>
 
           {/* Optional Note */}
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
+            <label className="block text-[11px] font-semibold text-neutral-400 uppercase tracking-wider mb-1.5">
               Optional Note / Reference
             </label>
             <input
@@ -251,32 +254,32 @@ export default function RecordPaymentModal({
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="e.g. Wire reference #TRX-998822 or Cheque #4421"
-              className="w-full p-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+              className="saas-input"
             />
           </div>
 
           {/* Buttons */}
-          <div className="flex justify-end space-x-2 pt-2 border-t border-slate-200">
+          <div className="flex justify-end space-x-2 pt-3 border-t border-black/[0.05]">
             <button
               type="button"
               onClick={onClose}
               disabled={loading}
-              className="px-4 py-2 text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
+              className="px-4 py-2 text-xs font-medium text-neutral-700 bg-[#F5F6F8] hover:bg-[#EAEBED] rounded-full border border-black/[0.04] transition-all"
             >
               Cancel
             </button>
-            <button
+            <ShimmerButton
               type="submit"
               disabled={loading || !selectedInvoiceId}
-              className="inline-flex items-center px-4 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-sm transition-colors disabled:opacity-50"
+              size="md"
+              className="text-xs"
             >
-              <CreditCard className="w-3.5 h-3.5 mr-1.5" />
+              <CreditCard className="w-3.5 h-3.5 mr-1.5" strokeWidth={1.75} />
               {loading ? 'Recording...' : 'Record Payment'}
-            </button>
+            </ShimmerButton>
           </div>
         </form>
       )}
     </Modal>
   );
 }
-

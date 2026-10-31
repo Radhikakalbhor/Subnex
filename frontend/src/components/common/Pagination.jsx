@@ -15,34 +15,33 @@ export default function Pagination({
   const endIdx = Math.min(currentPage * pageSize, totalItems);
 
   return (
-    <div className="flex items-center justify-between px-4 py-3 bg-white border-t border-slate-200 sm:px-6">
-      <div className="text-xs text-slate-500">
-        Showing <span className="font-semibold text-slate-700">{startIdx}</span> to{' '}
-        <span className="font-semibold text-slate-700">{endIdx}</span> of{' '}
-        <span className="font-semibold text-slate-700">{totalItems}</span> results
+    <div className="flex items-center justify-between px-6 py-4 bg-white border-t border-black/[0.05]">
+      <div className="text-xs text-neutral-500">
+        Showing <span className="font-semibold text-neutral-800">{startIdx}</span> to{' '}
+        <span className="font-semibold text-neutral-800">{endIdx}</span> of{' '}
+        <span className="font-semibold text-neutral-800">{totalItems}</span> entries
       </div>
       <div className="flex items-center space-x-2">
         <button
           onClick={() => onPageChange(Math.max(1, currentPage - 1))}
           disabled={currentPage === 1}
-          className="inline-flex items-center px-2.5 py-1 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-neutral-700 bg-[#F5F6F8] hover:bg-[#EAEBED] border border-black/[0.04] rounded-full transition-all disabled:opacity-40 disabled:cursor-not-allowed"
         >
-          <ChevronLeft className="w-4 h-4 mr-1" />
+          <ChevronLeft className="w-3.5 h-3.5 mr-1" strokeWidth={1.75} />
           Previous
         </button>
-        <span className="text-xs font-semibold text-slate-600 px-2">
-          Page {currentPage} of {totalPages}
+        <span className="text-xs font-medium text-neutral-500 px-2">
+          {currentPage} / {totalPages}
         </span>
         <button
           onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
           disabled={currentPage === totalPages}
-          className="inline-flex items-center px-2.5 py-1 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-neutral-700 bg-[#F5F6F8] hover:bg-[#EAEBED] border border-black/[0.04] rounded-full transition-all disabled:opacity-40 disabled:cursor-not-allowed"
         >
           Next
-          <ChevronRight className="w-4 h-4 ml-1" />
+          <ChevronRight className="w-3.5 h-3.5 ml-1" strokeWidth={1.75} />
         </button>
       </div>
     </div>
   );
 }
-

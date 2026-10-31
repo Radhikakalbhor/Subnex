@@ -5,6 +5,8 @@ import { StatusBadge } from '../common/Badge';
 import LoadingSpinner from '../common/LoadingSpinner';
 import EmptyState from '../common/EmptyState';
 import Pagination from '../common/Pagination';
+import { ShimmerButton } from '../watermelon/ShimmerButton';
+import { CopyConfirm } from '../watermelon/CopyConfirm';
 import { formatCurrency, formatDate, formatDateTime, formatPaymentMethod } from '../../utils/formatters';
 import {
   CreditCard,
@@ -86,55 +88,58 @@ export default function PaymentList({ onOpenRecordPayment }) {
   return (
     <div className="space-y-6">
       {/* Header & Controls */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-slate-100">
+      <div className="saas-card p-6 sm:p-7">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-5 border-b border-black/[0.05]">
           <div>
-            <h1 className="text-xl font-black text-slate-900 tracking-tight flex items-center">
-              <CreditCard className="w-5 h-5 mr-2 text-emerald-600" />
+            <h1 className="text-xl sm:text-2xl font-bold text-neutral-900 tracking-tight flex items-center">
+              <div className="w-7 h-7 rounded-full bg-[#F5F6F8] flex items-center justify-center mr-2.5 text-neutral-800">
+                <CreditCard className="w-4 h-4" strokeWidth={1.75} />
+              </div>
               {isCustomer ? 'My Payment History' : 'Payment Transactions & Reconciliation'}
             </h1>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <p className="text-xs text-neutral-500 mt-1 font-normal">
               Verified manual payment audit ledger, method allocations and refunds.
             </p>
           </div>
 
           <div className="flex items-center space-x-2">
             {!isCustomer && (
-              <button
+              <ShimmerButton
                 onClick={onOpenRecordPayment}
-                className="inline-flex items-center px-3 py-1.5 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-sm transition-colors"
+                size="sm"
+                className="text-xs"
               >
-                <PlusCircle className="w-3.5 h-3.5 mr-1.5" />
+                <PlusCircle className="w-3.5 h-3.5 mr-1.5" strokeWidth={1.75} />
                 Record Payment
-              </button>
+              </ShimmerButton>
             )}
             <button
               onClick={fetchPayments}
-              className="inline-flex items-center px-3 py-1.5 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
+              className="inline-flex items-center px-3.5 py-1.5 text-xs font-medium text-neutral-800 bg-[#F5F6F8] hover:bg-[#EAEBED] rounded-full border border-black/[0.04] transition-all"
             >
-              <RefreshCw className={`w-3.5 h-3.5 mr-1.5 ${loading ? 'animate-spin' : ''}`} />
+              <RefreshCw className={`w-3.5 h-3.5 mr-1.5 ${loading ? 'animate-spin' : ''}`} strokeWidth={1.75} />
               Refresh
             </button>
           </div>
         </div>
 
         {refundMsg && (
-          <div className="mt-3 p-2.5 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs rounded-lg font-medium flex items-center">
-            <CheckCircle className="w-4 h-4 mr-2 text-emerald-600" />
+          <div className="mt-4 p-3 bg-emerald-500/[0.08] border border-emerald-500/20 text-emerald-800 text-xs rounded-xl font-medium flex items-center">
+            <CheckCircle className="w-4 h-4 mr-2 text-emerald-600 flex-shrink-0" strokeWidth={2} />
             {refundMsg}
           </div>
         )}
 
         {/* Filters */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 pt-5">
           <div className="relative">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+            <Search className="w-4 h-4 text-neutral-400 absolute left-3.5 top-3" strokeWidth={1.75} />
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search reference, invoice, note..."
-              className="w-full pl-9 pr-3 py-2 text-xs border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500"
+              className="saas-input pl-10"
             />
           </div>
 
@@ -145,7 +150,7 @@ export default function PaymentList({ onOpenRecordPayment }) {
                 setMethodFilter(e.target.value);
                 setCurrentPage(1);
               }}
-              className="w-full text-xs border border-slate-200 rounded-lg p-2 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-indigo-500"
+              className="saas-input"
             >
               <option value="">All Payment Methods</option>
               <option value="bank_transfer">Bank Transfer / Wire</option>
@@ -164,7 +169,7 @@ export default function PaymentList({ onOpenRecordPayment }) {
                 setStatusFilter(e.target.value);
                 setCurrentPage(1);
               }}
-              className="w-full text-xs border border-slate-200 rounded-lg p-2 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-indigo-500"
+              className="saas-input"
             >
               <option value="">All Statuses</option>
               <option value="successful">Successful</option>
@@ -176,7 +181,7 @@ export default function PaymentList({ onOpenRecordPayment }) {
       </div>
 
       {/* Table Section */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+      <div className="saas-card overflow-hidden">
         {loading ? (
           <LoadingSpinner message="Querying payment transactions..." />
         ) : filteredPayments.length === 0 ? (
@@ -190,7 +195,7 @@ export default function PaymentList({ onOpenRecordPayment }) {
           <>
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
-                <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase tracking-wider font-semibold">
+                <thead className="bg-[#FAFAFA] border-b border-black/[0.05] text-neutral-400 uppercase tracking-wider font-semibold text-[11px]">
                   <tr>
                     <th className="px-5 py-3">Reference</th>
                     {!isCustomer && <th className="px-5 py-3">Customer</th>}
@@ -203,29 +208,32 @@ export default function PaymentList({ onOpenRecordPayment }) {
                     {isAdmin && <th className="px-5 py-3 text-right">Admin</th>}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-black/[0.04]">
                   {filteredPayments.map((p) => (
-                    <tr key={p.id} className="hover:bg-slate-50/70">
-                      <td className="px-5 py-3.5 font-mono font-bold text-slate-900">
-                        {p.payment_reference}
+                    <tr key={p.id} className="hover:bg-[#F9FAFB] transition-colors">
+                      <td className="px-5 py-3.5 font-mono font-semibold text-neutral-900">
+                        <div className="flex items-center space-x-1.5">
+                          <span>{p.payment_reference}</span>
+                          <CopyConfirm valueToCopy={p.payment_reference} copyText="" />
+                        </div>
                       </td>
                       {!isCustomer && (
-                        <td className="px-5 py-3.5 text-slate-700">
-                          <div className="font-semibold text-slate-900">{p.customer_name}</div>
-                          <div className="text-[10px] text-slate-500">{p.customer_email}</div>
+                        <td className="px-5 py-3.5 text-neutral-700">
+                          <div className="font-semibold text-neutral-900">{p.customer_name}</div>
+                          <div className="text-[10px] text-neutral-400">{p.customer_email}</div>
                         </td>
                       )}
-                      <td className="px-5 py-3.5 font-medium text-slate-800">
+                      <td className="px-5 py-3.5 font-medium text-neutral-700">
                         {p.invoice_number || '—'}
                       </td>
-                      <td className="px-5 py-3.5 text-slate-700">
+                      <td className="px-5 py-3.5 text-neutral-600">
                         {formatPaymentMethod(p.payment_method)}
                       </td>
-                      <td className="px-5 py-3.5 font-bold text-emerald-600">
+                      <td className="px-5 py-3.5 font-semibold text-emerald-700">
                         {formatCurrency(p.amount, p.currency)}
                       </td>
-                      <td className="px-5 py-3.5 text-slate-600">{formatDate(p.payment_date)}</td>
-                      <td className="px-5 py-3.5 text-slate-500 max-w-xs truncate">
+                      <td className="px-5 py-3.5 text-neutral-500">{formatDate(p.payment_date)}</td>
+                      <td className="px-5 py-3.5 text-neutral-400 max-w-xs truncate">
                         {p.notes || '—'}
                       </td>
                       <td className="px-5 py-3.5">
@@ -236,10 +244,10 @@ export default function PaymentList({ onOpenRecordPayment }) {
                           {p.status === 'successful' && (
                             <button
                               onClick={() => handleRefund(p.id, p.payment_reference)}
-                              className="inline-flex items-center px-2 py-1 text-[11px] font-bold text-rose-700 hover:bg-rose-50 border border-rose-200 rounded-md transition-colors"
+                              className="inline-flex items-center px-2.5 py-1 text-[11px] font-semibold text-rose-700 bg-rose-500/[0.08] hover:bg-rose-500 hover:text-white rounded-full transition-all"
                               title="Process Admin Refund"
                             >
-                              <RotateCcw className="w-3 h-3 mr-1" />
+                              <RotateCcw className="w-3 h-3 mr-1" strokeWidth={1.75} />
                               Refund
                             </button>
                           )}
@@ -251,7 +259,6 @@ export default function PaymentList({ onOpenRecordPayment }) {
               </table>
             </div>
 
-            {/* Pagination */}
             <Pagination
               currentPage={currentPage}
               totalItems={totalCount}
@@ -264,4 +271,3 @@ export default function PaymentList({ onOpenRecordPayment }) {
     </div>
   );
 }
-

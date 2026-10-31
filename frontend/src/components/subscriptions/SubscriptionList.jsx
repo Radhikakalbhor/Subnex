@@ -6,6 +6,9 @@ import LoadingSpinner from '../common/LoadingSpinner';
 import EmptyState from '../common/EmptyState';
 import Pagination from '../common/Pagination';
 import Modal from '../common/Modal';
+import { ContinuousTabs } from '../watermelon/ContinuousTabs';
+import { CopyConfirm } from '../watermelon/CopyConfirm';
+import { ShimmerButton } from '../watermelon/ShimmerButton';
 import { formatCurrency, formatDate } from '../../utils/formatters';
 import {
   Layers,
@@ -13,7 +16,6 @@ import {
   Play,
   XCircle,
   Eye,
-  Filter,
   RefreshCw,
   Search,
 } from 'lucide-react';
@@ -107,37 +109,39 @@ export default function SubscriptionList() {
   return (
     <div className="space-y-6">
       {/* Header & Controls */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-slate-100">
+      <div className="saas-card p-6 sm:p-7">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-5 border-b border-black/[0.05]">
           <div>
-            <h1 className="text-xl font-black text-slate-900 tracking-tight flex items-center">
-              <Layers className="w-5 h-5 mr-2 text-indigo-600" />
+            <h1 className="text-xl sm:text-2xl font-bold text-neutral-900 tracking-tight flex items-center">
+              <div className="w-7 h-7 rounded-full bg-[#F5F6F8] flex items-center justify-center mr-2.5 text-neutral-800">
+                <Layers className="w-4 h-4" strokeWidth={1.75} />
+              </div>
               {isCustomer ? 'My Subscriptions' : 'Subscriptions Registry'}
             </h1>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <p className="text-xs text-neutral-500 mt-1 font-normal">
               Lifecycle status tracking, recurrence schedules, and line item configurations.
             </p>
           </div>
           <button
             onClick={fetchSubscriptions}
-            className="self-start sm:self-auto inline-flex items-center px-3 py-1.5 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
+            className="self-start sm:self-auto inline-flex items-center px-3.5 py-1.5 text-xs font-medium text-neutral-800 bg-[#F5F6F8] hover:bg-[#EAEBED] rounded-full border border-black/[0.04] transition-all"
           >
-            <RefreshCw className={`w-3.5 h-3.5 mr-1.5 ${loading ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`w-3.5 h-3.5 mr-1.5 ${loading ? 'animate-spin' : ''}`} strokeWidth={1.75} />
             Refresh
           </button>
         </div>
 
         {/* Action alert message */}
         {actionMsg && (
-          <div className="mt-3 p-2.5 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs rounded-lg font-medium">
+          <div className="mt-4 p-3 bg-emerald-500/[0.08] border border-emerald-500/20 text-emerald-800 text-xs rounded-xl font-medium">
             {actionMsg}
           </div>
         )}
 
-        {/* Search & Filters */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4">
-          <div className="relative sm:col-span-2">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+        {/* Search & Continuous Tabs Filters */}
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3.5 pt-5">
+          <div className="relative max-w-md w-full">
+            <Search className="w-4 h-4 text-neutral-400 absolute left-3.5 top-3" strokeWidth={1.75} />
             <input
               type="text"
               value={searchTerm}
@@ -146,35 +150,34 @@ export default function SubscriptionList() {
                 setCurrentPage(1);
               }}
               placeholder="Search all subscriptions by number, customer, email..."
-              className="w-full pl-9 pr-3 py-2 text-xs border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500"
+              className="saas-input pl-10"
             />
           </div>
 
-          <div>
-            <select
-              value={statusFilter}
-              onChange={(e) => {
-                setStatusFilter(e.target.value);
+          <div className="overflow-x-auto pb-1 lg:pb-0">
+            <ContinuousTabs
+              tabs={[
+                { id: 'all', label: 'All' },
+                { id: 'active', label: 'Active' },
+                { id: 'paused', label: 'Paused' },
+                { id: 'past_due', label: 'Past Due' },
+                { id: 'quotation', label: 'Quotation' },
+                { id: 'closed', label: 'Closed' },
+              ]}
+              activeId={statusFilter}
+              onChange={(id) => {
+                setStatusFilter(id);
                 setCurrentPage(1);
               }}
-              className="w-full text-xs border border-slate-200 rounded-lg p-2 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-indigo-500"
-            >
-              <option value="all">All Statuses</option>
-              <option value="active">Active</option>
-              <option value="confirmed">Confirmed</option>
-              <option value="quotation">Quotation</option>
-              <option value="draft">Draft</option>
-              <option value="paused">Paused</option>
-              <option value="closed">Closed</option>
-              <option value="past_due">Past Due</option>
-              <option value="cancelled">Cancelled</option>
-            </select>
+              size="sm"
+              layoutGroupId="sub-status-tabs"
+            />
           </div>
         </div>
       </div>
 
       {/* Table Section */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+      <div className="saas-card overflow-hidden">
         {loading ? (
           <LoadingSpinner message="Loading subscriptions..." />
         ) : subscriptions.length === 0 ? (
@@ -186,7 +189,7 @@ export default function SubscriptionList() {
           <>
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
-                <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase tracking-wider font-semibold">
+                <thead className="bg-[#FAFAFA] border-b border-black/[0.05] text-neutral-400 uppercase tracking-wider font-semibold text-[11px]">
                   <tr>
                     <th className="px-5 py-3">Subscription #</th>
                     {!isCustomer && <th className="px-5 py-3">Customer</th>}
@@ -197,37 +200,40 @@ export default function SubscriptionList() {
                     <th className="px-5 py-3 text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-black/[0.04]">
                   {subscriptions.map((sub) => (
-                    <tr key={sub.id} className="hover:bg-slate-50/70">
-                      <td className="px-5 py-3.5 font-mono font-bold text-slate-900">
-                        {sub.subscription_number}
+                    <tr key={sub.id} className="hover:bg-[#F9FAFB] transition-colors">
+                      <td className="px-5 py-3.5 font-semibold text-neutral-900">
+                        <div className="flex items-center space-x-1.5">
+                          <span>{sub.subscription_number}</span>
+                          <CopyConfirm valueToCopy={sub.subscription_number} copyText="" />
+                        </div>
                       </td>
                       {!isCustomer && (
-                        <td className="px-5 py-3.5 text-slate-700">
-                          <div className="font-semibold text-slate-900">{sub.customer_name}</div>
-                          <div className="text-[10px] text-slate-500">{sub.customer_email}</div>
+                        <td className="px-5 py-3.5 text-neutral-700">
+                          <div className="font-semibold text-neutral-900">{sub.customer_name}</div>
+                          <div className="text-[10px] text-neutral-400">{sub.customer_email}</div>
                         </td>
                       )}
                       <td className="px-5 py-3.5">
                         <StatusBadge status={sub.status} />
                       </td>
-                      <td className="px-5 py-3.5 text-slate-600 font-medium">
+                      <td className="px-5 py-3.5 text-neutral-500 font-medium">
                         {formatDate(sub.next_billing_date)}
                       </td>
-                      <td className="px-5 py-3.5 text-slate-600 font-medium">
+                      <td className="px-5 py-3.5 text-neutral-500 font-medium">
                         {sub.payment_terms || 'Net 30'}
                       </td>
-                      <td className="px-5 py-3.5 font-bold text-slate-900">
+                      <td className="px-5 py-3.5 font-semibold text-neutral-900">
                         {formatCurrency(sub.grand_total || sub.recurring_total || 0, sub.currency)}
                       </td>
                       <td className="px-5 py-3.5 text-right space-x-1.5 whitespace-nowrap">
                         <button
                           onClick={() => openDetailsModal(sub.id)}
-                          className="p-1.5 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                          className="w-7 h-7 rounded-full bg-[#F5F6F8] hover:bg-neutral-900 hover:text-white text-neutral-600 inline-flex items-center justify-center transition-all border border-black/[0.04]"
                           title="View Lines & Details"
                         >
-                          <Eye className="w-4 h-4" />
+                          <Eye className="w-3.5 h-3.5" strokeWidth={1.75} />
                         </button>
 
                         {(isAdmin || isStaff) && (
@@ -235,28 +241,28 @@ export default function SubscriptionList() {
                             {sub.status === 'active' && (
                               <button
                                 onClick={() => handleTransition(sub.id, 'paused')}
-                                className="p-1.5 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
+                                className="w-7 h-7 rounded-full bg-amber-500/[0.1] hover:bg-amber-500 hover:text-white text-amber-700 inline-flex items-center justify-center transition-all"
                                 title="Pause Recurring Billing"
                               >
-                                <Pause className="w-4 h-4" />
+                                <Pause className="w-3.5 h-3.5" strokeWidth={1.75} />
                               </button>
                             )}
                             {sub.status === 'paused' && (
                               <button
                                 onClick={() => handleTransition(sub.id, 'active')}
-                                className="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
+                                className="w-7 h-7 rounded-full bg-emerald-500/[0.1] hover:bg-emerald-500 hover:text-white text-emerald-700 inline-flex items-center justify-center transition-all"
                                 title="Resume Subscription"
                               >
-                                <Play className="w-4 h-4" />
+                                <Play className="w-3.5 h-3.5" strokeWidth={1.75} />
                               </button>
                             )}
                             {['active', 'paused', 'confirmed'].includes(sub.status) && (
                               <button
                                 onClick={() => handleTransition(sub.id, 'closed')}
-                                className="p-1.5 text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
+                                className="w-7 h-7 rounded-full bg-rose-500/[0.1] hover:bg-rose-500 hover:text-white text-rose-700 inline-flex items-center justify-center transition-all"
                                 title="Close Subscription"
                               >
-                                <XCircle className="w-4 h-4" />
+                                <XCircle className="w-3.5 h-3.5" strokeWidth={1.75} />
                               </button>
                             )}
                           </>
@@ -268,7 +274,6 @@ export default function SubscriptionList() {
               </table>
             </div>
 
-            {/* Pagination (Requirement 8) */}
             <Pagination
               currentPage={currentPage}
               totalItems={totalCount}
@@ -289,55 +294,55 @@ export default function SubscriptionList() {
         >
           <div className="space-y-4 text-xs">
             {/* Summary Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 bg-[#F8F9FA] p-4 rounded-[18px] border border-black/[0.04]">
               <div>
-                <span className="text-slate-400 font-medium">Customer:</span>
-                <p className="font-bold text-slate-900">{selectedSub.customer_name}</p>
+                <span className="text-[10px] font-semibold text-neutral-400 uppercase tracking-wider block mb-1">Customer:</span>
+                <p className="font-semibold text-neutral-900">{selectedSub.customer_name}</p>
               </div>
               <div>
-                <span className="text-slate-400 font-medium">Status:</span>
+                <span className="text-[10px] font-semibold text-neutral-400 uppercase tracking-wider block mb-1">Status:</span>
                 <div><StatusBadge status={selectedSub.status} /></div>
               </div>
               <div>
-                <span className="text-slate-400 font-medium">Next Billing:</span>
-                <p className="font-semibold text-indigo-700">{formatDate(selectedSub.next_billing_date)}</p>
+                <span className="text-[10px] font-semibold text-neutral-400 uppercase tracking-wider block mb-1">Next Billing:</span>
+                <p className="font-semibold text-neutral-900">{formatDate(selectedSub.next_billing_date)}</p>
               </div>
               <div>
-                <span className="text-slate-400 font-medium">Period Start:</span>
-                <p className="font-semibold text-slate-800">{formatDate(selectedSub.current_period_start)}</p>
+                <span className="text-[10px] font-semibold text-neutral-400 uppercase tracking-wider block mb-1">Period Start:</span>
+                <p className="font-medium text-neutral-700">{formatDate(selectedSub.current_period_start)}</p>
               </div>
               <div>
-                <span className="text-slate-400 font-medium">Period End:</span>
-                <p className="font-semibold text-slate-800">{formatDate(selectedSub.current_period_end)}</p>
+                <span className="text-[10px] font-semibold text-neutral-400 uppercase tracking-wider block mb-1">Period End:</span>
+                <p className="font-medium text-neutral-700">{formatDate(selectedSub.current_period_end)}</p>
               </div>
               <div>
-                <span className="text-slate-400 font-medium">Payment Terms:</span>
-                <p className="font-semibold text-slate-800">{selectedSub.payment_terms || 'Net 30'}</p>
+                <span className="text-[10px] font-semibold text-neutral-400 uppercase tracking-wider block mb-1">Payment Terms:</span>
+                <p className="font-medium text-neutral-700">{selectedSub.payment_terms || 'Net 30'}</p>
               </div>
             </div>
 
             {/* Line Items */}
             <div>
-              <h4 className="font-bold text-slate-800 mb-2">Subscription Line Items</h4>
-              <div className="border border-slate-200 rounded-xl overflow-hidden">
+              <h4 className="font-semibold text-neutral-900 mb-2 tracking-tight">Subscription Line Items</h4>
+              <div className="border border-black/[0.06] rounded-[18px] overflow-hidden">
                 <table className="w-full text-left">
-                  <thead className="bg-slate-100 text-slate-600 font-semibold border-b border-slate-200">
+                  <thead className="bg-[#FAFAFA] text-neutral-400 font-semibold text-[11px] uppercase tracking-wider border-b border-black/[0.05]">
                     <tr>
-                      <th className="px-3 py-2">Item / Plan</th>
-                      <th className="px-3 py-2">Quantity</th>
-                      <th className="px-3 py-2">Unit Price</th>
-                      <th className="px-3 py-2 text-right">Line Total</th>
+                      <th className="px-4 py-2.5">Item / Plan</th>
+                      <th className="px-4 py-2.5">Quantity</th>
+                      <th className="px-4 py-2.5">Unit Price</th>
+                      <th className="px-4 py-2.5 text-right">Line Total</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100">
+                  <tbody className="divide-y divide-black/[0.04]">
                     {(selectedSub.lines || []).map((l, idx) => (
-                      <tr key={idx}>
-                        <td className="px-3 py-2 font-medium text-slate-900">
+                      <tr key={idx} className="hover:bg-[#F9FAFB] transition-colors">
+                        <td className="px-4 py-2.5 font-medium text-neutral-900">
                           {l.plan_name || l.product_name || 'Plan Item'}
                         </td>
-                        <td className="px-3 py-2 text-slate-700">{l.quantity}</td>
-                        <td className="px-3 py-2 text-slate-700">{formatCurrency(l.unit_price)}</td>
-                        <td className="px-3 py-2 text-right font-bold text-slate-900">
+                        <td className="px-4 py-2.5 text-neutral-600">{l.quantity}</td>
+                        <td className="px-4 py-2.5 text-neutral-600">{formatCurrency(l.unit_price)}</td>
+                        <td className="px-4 py-2.5 text-right font-semibold text-neutral-900">
                           {formatCurrency(l.total_amount || l.unit_price * l.quantity)}
                         </td>
                       </tr>
@@ -348,9 +353,9 @@ export default function SubscriptionList() {
             </div>
 
             {/* Total Footer */}
-            <div className="flex justify-between items-center pt-3 border-t border-slate-200 font-bold text-sm">
-              <span>Grand Total:</span>
-              <span className="text-indigo-600 text-base">
+            <div className="flex justify-between items-center pt-3 border-t border-black/[0.05] font-bold text-sm">
+              <span className="text-neutral-900">Grand Total:</span>
+              <span className="text-neutral-950 text-base">
                 {formatCurrency(selectedSub.grand_total || selectedSub.recurring_total || 0, selectedSub.currency)}
               </span>
             </div>
@@ -360,4 +365,3 @@ export default function SubscriptionList() {
     </div>
   );
 }
-

@@ -10,6 +10,8 @@ import PaymentList from './components/payments/PaymentList';
 import CustomerList from './components/customers/CustomerList';
 import RecordPaymentModal from './components/payments/RecordPaymentModal';
 import LoadingSpinner from './components/common/LoadingSpinner';
+import { ContinuousTabs } from './components/watermelon/ContinuousTabs';
+import { ShimmerButton } from './components/watermelon/ShimmerButton';
 import api from './services/api';
 import {
   Shield,
@@ -24,7 +26,6 @@ import {
   Sparkles,
   CheckCircle2,
   AlertCircle,
-  HelpCircle,
 } from 'lucide-react';
 
 function AuthScreen() {
@@ -92,79 +93,57 @@ function AuthScreen() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100 flex flex-col justify-center items-center p-4 sm:p-6">
-      {/* Background Glow */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-96 h-96 bg-indigo-600/20 rounded-full blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-purple-600/20 rounded-full blur-3xl" />
-      </div>
-
+    <div className="min-h-screen bg-[#F5F6F8] text-neutral-900 flex flex-col justify-center items-center p-4 sm:p-6">
       <div className="w-full max-w-xl relative z-10">
         {/* Brand Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center bg-indigo-600 text-white font-black text-2xl rounded-2xl w-14 h-14 shadow-xl shadow-indigo-500/20 mb-4">
+          <div className="inline-flex items-center justify-center bg-neutral-950 text-white font-bold text-xl rounded-[18px] w-14 h-14 shadow-xs mb-4">
             SX
           </div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-white">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-neutral-900">
             SUBNEX Enterprise
           </h1>
-          <p className="mt-1 text-sm text-slate-400">
+          <p className="mt-1 text-xs text-neutral-500 font-normal">
             One Platform. Every Subscription. Complete Control.
           </p>
-          <div className="mt-3 inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-indigo-950/80 text-indigo-300 border border-indigo-800">
-            <Sparkles className="w-3.5 h-3.5 mr-1.5 text-indigo-400" />
+          <div className="mt-3.5 inline-flex items-center px-3 py-1 rounded-full text-[11px] font-medium bg-white text-neutral-700 border border-black/[0.06] shadow-xs">
+            <Sparkles className="w-3.5 h-3.5 mr-1.5 text-neutral-800" strokeWidth={1.75} />
             Phase 6: Live Production Dashboards & Customer Portal
           </div>
         </div>
 
         {/* Auth Card */}
-        <div className="bg-slate-800/90 backdrop-blur-xl border border-slate-700 rounded-3xl p-6 sm:p-8 shadow-2xl">
-          {/* Tabs */}
-          <div className="flex border-b border-slate-700 mb-6">
-            <button
-              onClick={() => { setActiveTab('quick'); setLocalError(null); }}
-              className={`pb-3 px-4 text-xs font-bold transition-all border-b-2 ${
-                activeTab === 'quick'
-                  ? 'border-indigo-500 text-indigo-400'
-                  : 'border-transparent text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              1-Click Demo Roles
-            </button>
-            <button
-              onClick={() => { setActiveTab('login'); setLocalError(null); }}
-              className={`pb-3 px-4 text-xs font-bold transition-all border-b-2 ${
-                activeTab === 'login'
-                  ? 'border-indigo-500 text-indigo-400'
-                  : 'border-transparent text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              Direct Sign In
-            </button>
-            <button
-              onClick={() => { setActiveTab('register'); setLocalError(null); }}
-              className={`pb-3 px-4 text-xs font-bold transition-all border-b-2 ${
-                activeTab === 'register'
-                  ? 'border-indigo-500 text-indigo-400'
-                  : 'border-transparent text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              New Customer Registration
-            </button>
+        <div className="bg-white rounded-[28px] border border-black/[0.06] p-6 sm:p-8 shadow-[0_4px_24px_rgba(0,0,0,0.03)]">
+          {/* Watermelon Continuous Tabs */}
+          <div className="flex justify-center mb-6">
+            <ContinuousTabs
+              tabs={[
+                { id: 'quick', label: '1-Click Demo' },
+                { id: 'login', label: 'Sign In' },
+                { id: 'register', label: 'Register' },
+              ]}
+              activeId={activeTab}
+              onChange={(id) => {
+                setActiveTab(id);
+                setLocalError(null);
+              }}
+              className="w-full justify-between"
+              layoutGroupId="auth-tabs"
+            />
           </div>
 
           {(localError || authError) && (
-            <div className="mb-6 p-4 rounded-xl bg-rose-950/50 border border-rose-800 text-rose-300 text-xs flex items-center">
-              <AlertCircle className="w-4 h-4 mr-2 flex-shrink-0" />
+            <div className="mb-6 p-3.5 rounded-2xl bg-rose-500/[0.08] border border-rose-500/20 text-rose-700 text-xs flex items-center">
+              <AlertCircle className="w-4 h-4 mr-2 flex-shrink-0" strokeWidth={2} />
               <span>{localError || authError}</span>
             </div>
           )}
 
           {/* Tab 1: 1-Click Demo Profiles */}
           {activeTab === 'quick' && (
-            <div className="space-y-4">
-              <p className="text-xs text-slate-300 mb-3">
-                Select a preset role to immediately test the role-specific dashboard views, permissions, and features with real PostgreSQL database records:
+            <div className="space-y-3">
+              <p className="text-xs text-neutral-500 mb-3 leading-relaxed">
+                Select a preset role to immediately test the role-specific dashboard views, permissions, and features with real database records:
               </p>
 
               {/* Admin Persona */}
@@ -172,22 +151,24 @@ function AuthScreen() {
                 type="button"
                 onClick={() => handleQuickLogin('admin')}
                 disabled={loading}
-                className="w-full text-left p-4 rounded-2xl bg-slate-900/60 hover:bg-indigo-950/40 border border-slate-700 hover:border-indigo-500 transition-all group flex items-center justify-between"
+                className="w-full text-left p-4 rounded-[20px] bg-[#F8F9FA] hover:bg-[#F1F3F5] border border-black/[0.04] hover:border-black/[0.08] transition-all group flex items-center justify-between"
               >
                 <div className="flex items-center space-x-3.5">
-                  <div className="w-10 h-10 rounded-xl bg-indigo-600/20 text-indigo-400 flex items-center justify-center font-bold">
-                    <Shield className="w-5 h-5" />
+                  <div className="w-10 h-10 rounded-full bg-white border border-black/[0.05] text-neutral-800 flex items-center justify-center font-bold">
+                    <Shield className="w-4 h-4" strokeWidth={1.75} />
                   </div>
                   <div>
-                    <div className="font-bold text-white text-sm group-hover:text-indigo-300 transition-colors">
+                    <div className="font-semibold text-neutral-900 text-xs tracking-tight">
                       Admin / Finance Dashboard
                     </div>
-                    <div className="text-xs text-slate-400">
+                    <div className="text-[11px] text-neutral-400 mt-0.5">
                       Total revenue, overdue analytics, pagination, refunds & customer registry
                     </div>
                   </div>
                 </div>
-                <ArrowRight className="w-4 h-4 text-slate-500 group-hover:text-indigo-400 group-hover:translate-x-1 transition-all" />
+                <div className="w-7 h-7 rounded-full bg-white group-hover:bg-neutral-900 group-hover:text-white flex items-center justify-center transition-colors">
+                  <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.75} />
+                </div>
               </button>
 
               {/* Staff Persona */}
@@ -195,22 +176,24 @@ function AuthScreen() {
                 type="button"
                 onClick={() => handleQuickLogin('staff')}
                 disabled={loading}
-                className="w-full text-left p-4 rounded-2xl bg-slate-900/60 hover:bg-purple-950/40 border border-slate-700 hover:border-purple-500 transition-all group flex items-center justify-between"
+                className="w-full text-left p-4 rounded-[20px] bg-[#F8F9FA] hover:bg-[#F1F3F5] border border-black/[0.04] hover:border-black/[0.08] transition-all group flex items-center justify-between"
               >
                 <div className="flex items-center space-x-3.5">
-                  <div className="w-10 h-10 rounded-xl bg-purple-600/20 text-purple-400 flex items-center justify-center font-bold">
-                    <Layers className="w-5 h-5" />
+                  <div className="w-10 h-10 rounded-full bg-white border border-black/[0.05] text-neutral-800 flex items-center justify-center font-bold">
+                    <Layers className="w-4 h-4" strokeWidth={1.75} />
                   </div>
                   <div>
-                    <div className="font-bold text-white text-sm group-hover:text-purple-300 transition-colors">
+                    <div className="font-semibold text-neutral-900 text-xs tracking-tight">
                       Staff Operations Panel
                     </div>
-                    <div className="text-xs text-slate-400">
+                    <div className="text-[11px] text-neutral-400 mt-0.5">
                       Manage subscriptions, trigger billing runs, audit customer registry
                     </div>
                   </div>
                 </div>
-                <ArrowRight className="w-4 h-4 text-slate-500 group-hover:text-purple-400 group-hover:translate-x-1 transition-all" />
+                <div className="w-7 h-7 rounded-full bg-white group-hover:bg-neutral-900 group-hover:text-white flex items-center justify-center transition-colors">
+                  <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.75} />
+                </div>
               </button>
 
               {/* Customer Persona */}
@@ -218,22 +201,24 @@ function AuthScreen() {
                 type="button"
                 onClick={() => handleQuickLogin('customer')}
                 disabled={loading}
-                className="w-full text-left p-4 rounded-2xl bg-slate-900/60 hover:bg-emerald-950/40 border border-slate-700 hover:border-emerald-500 transition-all group flex items-center justify-between"
+                className="w-full text-left p-4 rounded-[20px] bg-[#F8F9FA] hover:bg-[#F1F3F5] border border-black/[0.04] hover:border-black/[0.08] transition-all group flex items-center justify-between"
               >
                 <div className="flex items-center space-x-3.5">
-                  <div className="w-10 h-10 rounded-xl bg-emerald-600/20 text-emerald-400 flex items-center justify-center font-bold">
-                    <User className="w-5 h-5" />
+                  <div className="w-10 h-10 rounded-full bg-white border border-black/[0.05] text-neutral-800 flex items-center justify-center font-bold">
+                    <User className="w-4 h-4" strokeWidth={1.75} />
                   </div>
                   <div>
-                    <div className="font-bold text-white text-sm group-hover:text-emerald-300 transition-colors">
+                    <div className="font-semibold text-neutral-900 text-xs tracking-tight">
                       Customer Self-Service Portal
                     </div>
-                    <div className="text-xs text-slate-400">
+                    <div className="text-[11px] text-neutral-400 mt-0.5">
                       View active subscriptions, renewal dates, invoice history & pay balances
                     </div>
                   </div>
                 </div>
-                <ArrowRight className="w-4 h-4 text-slate-500 group-hover:text-emerald-400 group-hover:translate-x-1 transition-all" />
+                <div className="w-7 h-7 rounded-full bg-white group-hover:bg-neutral-900 group-hover:text-white flex items-center justify-center transition-colors">
+                  <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.75} />
+                </div>
               </button>
             </div>
           )}
@@ -242,46 +227,46 @@ function AuthScreen() {
           {activeTab === 'login' && (
             <form onSubmit={handleStandardLogin} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                <label className="block text-[11px] font-semibold text-neutral-500 uppercase tracking-wider mb-1.5">
                   Email Address
                 </label>
                 <div className="relative">
-                  <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+                  <Mail className="w-4 h-4 text-neutral-400 absolute left-3.5 top-3" strokeWidth={1.75} />
                   <input
                     type="email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@company.com"
-                    className="w-full bg-slate-900/80 border border-slate-700 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                    className="saas-input pl-10"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                <label className="block text-[11px] font-semibold text-neutral-500 uppercase tracking-wider mb-1.5">
                   Password
                 </label>
                 <div className="relative">
-                  <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+                  <Lock className="w-4 h-4 text-neutral-400 absolute left-3.5 top-3" strokeWidth={1.75} />
                   <input
                     type="password"
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••••••"
-                    className="w-full bg-slate-900/80 border border-slate-700 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                    className="saas-input pl-10"
                   />
                 </div>
               </div>
 
-              <button
+              <ShimmerButton
                 type="submit"
                 disabled={loading}
-                className="w-full py-2.5 mt-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold transition-all disabled:opacity-50"
+                className="w-full py-2.5 mt-2 text-xs"
               >
                 {loading ? 'Authenticating...' : 'Sign In to Dashboard'}
-              </button>
+              </ShimmerButton>
             </form>
           )}
 
@@ -289,88 +274,88 @@ function AuthScreen() {
           {activeTab === 'register' && (
             <form onSubmit={handleStandardRegister} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                <label className="block text-[11px] font-semibold text-neutral-500 uppercase tracking-wider mb-1.5">
                   Full Name
                 </label>
                 <div className="relative">
-                  <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+                  <User className="w-4 h-4 text-neutral-400 absolute left-3.5 top-3" strokeWidth={1.75} />
                   <input
                     type="text"
                     required
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     placeholder="Jane Doe"
-                    className="w-full bg-slate-900/80 border border-slate-700 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                    className="saas-input pl-10"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                <label className="block text-[11px] font-semibold text-neutral-500 uppercase tracking-wider mb-1.5">
                   Company Name (Optional)
                 </label>
                 <div className="relative">
-                  <Building className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+                  <Building className="w-4 h-4 text-neutral-400 absolute left-3.5 top-3" strokeWidth={1.75} />
                   <input
                     type="text"
                     value={companyName}
                     onChange={(e) => setCompanyName(e.target.value)}
                     placeholder="Globex Corporation"
-                    className="w-full bg-slate-900/80 border border-slate-700 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                    className="saas-input pl-10"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                <label className="block text-[11px] font-semibold text-neutral-500 uppercase tracking-wider mb-1.5">
                   Email Address
                 </label>
                 <div className="relative">
-                  <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+                  <Mail className="w-4 h-4 text-neutral-400 absolute left-3.5 top-3" strokeWidth={1.75} />
                   <input
                     type="email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="jane@globex.com"
-                    className="w-full bg-slate-900/80 border border-slate-700 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                    className="saas-input pl-10"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                <label className="block text-[11px] font-semibold text-neutral-500 uppercase tracking-wider mb-1.5">
                   Password (min 8 chars, 1 upper, 1 special)
                 </label>
                 <div className="relative">
-                  <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+                  <Lock className="w-4 h-4 text-neutral-400 absolute left-3.5 top-3" strokeWidth={1.75} />
                   <input
                     type="password"
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••••••"
-                    className="w-full bg-slate-900/80 border border-slate-700 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                    className="saas-input pl-10"
                   />
                 </div>
               </div>
 
-              <button
+              <ShimmerButton
                 type="submit"
                 disabled={loading}
-                className="w-full py-2.5 mt-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold transition-all disabled:opacity-50"
+                className="w-full py-2.5 mt-2 text-xs"
               >
                 {loading ? 'Creating Account...' : 'Register Customer Account'}
-              </button>
+              </ShimmerButton>
             </form>
           )}
         </div>
 
         {/* Security & System Info Footer */}
-        <div className="mt-8 text-center text-[11px] text-slate-500 flex items-center justify-center space-x-4">
+        <div className="mt-8 text-center text-[11px] text-neutral-400 flex items-center justify-center space-x-3">
           <span className="flex items-center">
-            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 mr-1" />
-            Live PostgreSQL Data
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 mr-1" strokeWidth={2} />
+            Live Database Connected
           </span>
           <span>•</span>
           <span>JWT RBAC Enforced</span>
@@ -416,8 +401,8 @@ function MainApp() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-900 flex items-center justify-center">
-        <LoadingSpinner message="Connecting to SUBNEX PostgreSQL backend..." />
+      <div className="min-h-screen bg-[#F5F6F8] flex items-center justify-center">
+        <LoadingSpinner message="Connecting to SUBNEX backend..." />
       </div>
     );
   }
@@ -441,7 +426,7 @@ function MainApp() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans antialiased">
+    <div className="min-h-screen bg-[#F5F6F8] text-neutral-900 flex flex-col font-sans antialiased">
       {/* Top Navigation */}
       <Navbar
         onOpenRecordPayment={handleOpenRecordPayment}

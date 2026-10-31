@@ -1,12 +1,13 @@
 import React from 'react';
-import { RefreshCw } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 
 export default function LoadingSpinner({ message = 'Loading live data...' }) {
   return (
-    <div className="flex flex-col items-center justify-center p-12 text-slate-500">
-      <RefreshCw className="w-8 h-8 animate-spin text-indigo-600 mb-3" />
-      <p className="text-sm font-medium">{message}</p>
+    <div className="flex flex-col items-center justify-center p-12 text-neutral-500">
+      <div className="w-10 h-10 rounded-full bg-[#F5F6F8] border border-black/[0.04] flex items-center justify-center mb-3">
+        <Loader2 className="w-5 h-5 animate-spin text-neutral-800" strokeWidth={2} />
+      </div>
+      <p className="text-xs font-medium text-neutral-500">{message}</p>
     </div>
   );
 }
-
