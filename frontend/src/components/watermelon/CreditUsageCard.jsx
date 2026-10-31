@@ -43,27 +43,28 @@ export function CreditUsageCard({
     <BorderGlow
       edgeSensitivity={30}
       glowColor="40 80 80"
-      backgroundColor="#FFFFFF"
+      backgroundColor="rgba(255, 255, 255, 0.52)"
+      backgroundOpacity={0.52}
       borderRadius={24}
       glowRadius={40}
       glowIntensity={1}
       coneSpread={25}
       animated={false}
       colors={['#c084fc', '#f472b6', '#38bdf8']}
-      className="w-full border border-black/[0.06] shadow-[0_2px_12px_rgba(0,0,0,0.02)]"
+      className="w-full border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
     >
       <div className="p-5 sm:p-6 transition-all duration-300">
         {/* Top Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-4 border-b border-black/[0.05]">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-4 border-b border-black/[0.08]">
           <div>
-            <span className="text-[11px] font-semibold tracking-wider text-neutral-400 uppercase block mb-1">
+            <span className="text-[11px] font-bold tracking-wider text-neutral-600 uppercase block mb-1">
               {title}
             </span>
             <div className="flex items-baseline space-x-2">
-              <span className="text-3xl font-bold text-neutral-900 tracking-tight">
+              <span className="text-3xl font-extrabold text-neutral-950 tracking-tight">
                 {percent}%
               </span>
-              <span className="text-xs font-medium text-emerald-700 bg-emerald-500/[0.1] px-2 py-0.5 rounded-full border border-emerald-500/20">
+              <span className="text-xs font-semibold text-emerald-800 bg-emerald-500/[0.15] px-2.5 py-0.5 rounded-full border border-emerald-500/30">
                 Realized
               </span>
             </div>

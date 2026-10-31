@@ -196,7 +196,7 @@ export default function PaymentList({ onOpenRecordPayment }) {
           <>
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
-                <thead className="bg-[#FAFAFA] border-b border-black/[0.05] text-neutral-400 uppercase tracking-wider font-semibold text-[11px]">
+                <thead className="bg-white/30 backdrop-blur-sm border-b border-black/[0.05] text-neutral-400 uppercase tracking-wider font-semibold text-[11px]">
                   <tr>
                     <th className="px-5 py-3">Reference</th>
                     {!isCustomer && <th className="px-5 py-3">Customer</th>}
@@ -211,7 +211,7 @@ export default function PaymentList({ onOpenRecordPayment }) {
                 </thead>
                 <tbody className="divide-y divide-black/[0.04]">
                   {filteredPayments.map((p) => (
-                    <tr key={p.id} className="hover:bg-[#F9FAFB] transition-colors">
+                    <tr key={p.id} className="hover:bg-white/50 transition-colors">
                       <td className="px-5 py-3.5 font-mono font-semibold text-neutral-900">
                         <div className="flex items-center space-x-1.5">
                           <span>{p.payment_reference}</span>

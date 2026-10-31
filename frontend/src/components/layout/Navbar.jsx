@@ -34,7 +34,7 @@ export default function Navbar({
   };
 
   return (
-    <header className="bg-white/85 backdrop-blur-md border-b border-black/[0.05] sticky top-0 z-30">
+    <header className="bg-white/60 backdrop-blur-xl border-b border-white/60 shadow-[0_4px_24px_rgba(0,0,0,0.02)] sticky top-0 z-30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Brand & Menu Trigger */}
         <div className="flex items-center space-x-3.5">

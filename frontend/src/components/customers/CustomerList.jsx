@@ -116,7 +116,7 @@ export default function CustomerList({ onSelectCustomer }) {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-[#FAFAFA] border-b border-black/[0.05] text-neutral-400 uppercase tracking-wider font-semibold text-[11px]">
+              <thead className="bg-white/30 backdrop-blur-sm border-b border-black/[0.05] text-neutral-400 uppercase tracking-wider font-semibold text-[11px]">
                 <tr>
                   <th className="px-5 py-3">Full Name</th>
                   <th className="px-5 py-3">Organization</th>
@@ -128,7 +128,7 @@ export default function CustomerList({ onSelectCustomer }) {
               </thead>
               <tbody className="divide-y divide-black/[0.04]">
                 {filteredUsers.map((u) => (
-                  <tr key={u.id} className="hover:bg-[#F9FAFB] transition-colors">
+                  <tr key={u.id} className="hover:bg-white/50 transition-colors">
                     <td className="px-5 py-3.5 font-semibold text-neutral-900">{u.full_name}</td>
                     <td className="px-5 py-3.5 text-neutral-600 font-medium">
                       {u.company_name ? (

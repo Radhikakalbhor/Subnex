@@ -15,7 +15,7 @@ export default function Pagination({
   const endIdx = Math.min(currentPage * pageSize, totalItems);
 
   return (
-    <div className="flex items-center justify-between px-6 py-4 bg-white border-t border-black/[0.05]">
+    <div className="flex items-center justify-between px-6 py-4 bg-white/30 backdrop-blur-sm border-t border-black/[0.06]">
       <div className="text-xs text-neutral-500">
         Showing <span className="font-semibold text-neutral-800">{startIdx}</span> to{' '}
         <span className="font-semibold text-neutral-800">{endIdx}</span> of{' '}

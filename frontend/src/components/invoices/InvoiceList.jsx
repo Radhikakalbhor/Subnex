@@ -208,7 +208,7 @@ export default function InvoiceList({ onRecordPaymentForInvoice }) {
           <>
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
-                <thead className="bg-[#FAFAFA] border-b border-black/[0.05] text-neutral-400 uppercase tracking-wider font-semibold text-[11px]">
+                <thead className="bg-white/30 backdrop-blur-sm border-b border-black/[0.05] text-neutral-400 uppercase tracking-wider font-semibold text-[11px]">
                   <tr>
                     <th className="px-5 py-3">Invoice #</th>
                     {!isCustomer && <th className="px-5 py-3">Customer</th>}
@@ -223,7 +223,7 @@ export default function InvoiceList({ onRecordPaymentForInvoice }) {
                 </thead>
                 <tbody className="divide-y divide-black/[0.04]">
                   {filteredInvoices.map((inv) => (
-                    <tr key={inv.id} className="hover:bg-[#F9FAFB] transition-colors">
+                    <tr key={inv.id} className="hover:bg-white/50 transition-colors">
                       <td className="px-5 py-3.5 font-semibold text-neutral-900">
                         <div className="flex items-center space-x-1.5">
                           <span>{inv.invoice_number}</span>
@@ -331,7 +331,7 @@ export default function InvoiceList({ onRecordPaymentForInvoice }) {
               <h4 className="font-semibold text-neutral-900 mb-2 tracking-tight">Itemized Charges</h4>
               <div className="border border-black/[0.06] rounded-[18px] overflow-hidden">
                 <table className="w-full text-left">
-                  <thead className="bg-[#FAFAFA] text-neutral-400 font-semibold text-[11px] uppercase tracking-wider border-b border-black/[0.05]">
+                  <thead className="bg-white/30 backdrop-blur-sm text-neutral-400 font-semibold text-[11px] uppercase tracking-wider border-b border-black/[0.05]">
                     <tr>
                       <th className="px-4 py-2.5">Description</th>
                       <th className="px-4 py-2.5">Qty</th>
@@ -343,7 +343,7 @@ export default function InvoiceList({ onRecordPaymentForInvoice }) {
                   </thead>
                   <tbody className="divide-y divide-black/[0.04]">
                     {(selectedInvoice.lines || []).map((line) => (
-                      <tr key={line.id} className="hover:bg-[#F9FAFB] transition-colors">
+                      <tr key={line.id} className="hover:bg-white/50 transition-colors">
                         <td className="px-4 py-2.5 font-medium text-neutral-900">{line.description}</td>
                         <td className="px-4 py-2.5 text-neutral-600">{line.quantity}</td>
                         <td className="px-4 py-2.5 text-neutral-600">{formatCurrency(line.unit_price)}</td>
@@ -397,7 +397,7 @@ export default function InvoiceList({ onRecordPaymentForInvoice }) {
               </h4>
               <div className="border border-black/[0.06] rounded-[18px] overflow-hidden">
                 <table className="w-full text-left">
-                  <thead className="bg-[#FAFAFA] text-neutral-400 font-semibold text-[11px] uppercase tracking-wider border-b border-black/[0.05]">
+                  <thead className="bg-white/30 backdrop-blur-sm text-neutral-400 font-semibold text-[11px] uppercase tracking-wider border-b border-black/[0.05]">
                     <tr>
                       <th className="px-4 py-2.5">Reference</th>
                       <th className="px-4 py-2.5">Method</th>
@@ -416,7 +416,7 @@ export default function InvoiceList({ onRecordPaymentForInvoice }) {
                       </tr>
                     ) : (
                       selectedInvoice.payments.map((p) => (
-                        <tr key={p.id} className="hover:bg-[#F9FAFB] transition-colors">
+                        <tr key={p.id} className="hover:bg-white/50 transition-colors">
                           <td className="px-4 py-2.5 font-mono font-semibold text-neutral-800">{p.payment_reference}</td>
                           <td className="px-4 py-2.5 text-neutral-600">{formatPaymentMethod(p.payment_method)}</td>
                           <td className="px-4 py-2.5 font-semibold text-emerald-700">{formatCurrency(p.amount)}</td>

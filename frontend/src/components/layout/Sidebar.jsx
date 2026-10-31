@@ -183,7 +183,7 @@ export default function Sidebar({
               stiffness: 420,
               damping: 30,
             }}
-            className="fixed top-[68px] left-4 sm:left-6 md:left-8 w-[280px] bg-[#F6F7F9] border border-black/[0.08] rounded-[26px] p-4 shadow-[0_20px_50px_rgba(0,0,0,0.15),0_2px_8px_rgba(0,0,0,0.04)] backdrop-blur-xl z-50 flex flex-col justify-between max-h-[calc(100vh-5.5rem)] overflow-y-auto"
+            className="fixed top-[68px] left-4 sm:left-6 md:left-8 w-[280px] bg-white/75 border border-white/80 rounded-[26px] p-4 shadow-[0_20px_50px_rgba(31,38,135,0.12),inset_0_0_0_1px_rgba(255,255,255,0.6)] backdrop-blur-2xl z-50 flex flex-col justify-between max-h-[calc(100vh-5.5rem)] overflow-y-auto"
           >
             <div>
               {/* Header with Title & Pin / Close controls */}

@@ -215,7 +215,7 @@ export default function CustomerPortal({ onOpenRecordPayment, onRecordPaymentFor
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-[#FAFAFA] border-b border-black/[0.05] text-neutral-400 uppercase tracking-wider font-semibold text-[11px]">
+            <thead className="bg-white/30 backdrop-blur-sm border-b border-black/[0.05] text-neutral-400 uppercase tracking-wider font-semibold text-[11px]">
               <tr>
                 <th className="px-6 py-3">Subscription #</th>
                 <th className="px-6 py-3">Plan / Product</th>
@@ -235,7 +235,7 @@ export default function CustomerPortal({ onOpenRecordPayment, onRecordPaymentFor
                 </tr>
               ) : (
                 subscriptions.map((sub) => (
-                  <tr key={sub.id} className="hover:bg-[#F9FAFB] transition-colors">
+                  <tr key={sub.id} className="hover:bg-white/50 transition-colors">
                     <td className="px-6 py-3.5 font-semibold text-neutral-900">
                       {sub.subscription_number}
                     </td>
@@ -294,7 +294,7 @@ export default function CustomerPortal({ onOpenRecordPayment, onRecordPaymentFor
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-[#FAFAFA] border-b border-black/[0.05] text-neutral-400 uppercase tracking-wider font-semibold text-[11px]">
+            <thead className="bg-white/30 backdrop-blur-sm border-b border-black/[0.05] text-neutral-400 uppercase tracking-wider font-semibold text-[11px]">
               <tr>
                 <th className="px-6 py-3">Invoice #</th>
                 <th className="px-6 py-3">Issue Date</th>
@@ -315,7 +315,7 @@ export default function CustomerPortal({ onOpenRecordPayment, onRecordPaymentFor
                 </tr>
               ) : (
                 invoices.map((inv) => (
-                  <tr key={inv.id} className="hover:bg-[#F9FAFB] transition-colors">
+                  <tr key={inv.id} className="hover:bg-white/50 transition-colors">
                     <td className="px-6 py-3.5 font-semibold text-neutral-900">
                       <div className="flex items-center space-x-1.5">
                         <span>{inv.invoice_number}</span>
@@ -374,7 +374,7 @@ export default function CustomerPortal({ onOpenRecordPayment, onRecordPaymentFor
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-[#FAFAFA] border-b border-black/[0.05] text-neutral-400 uppercase tracking-wider font-semibold text-[11px]">
+            <thead className="bg-white/30 backdrop-blur-sm border-b border-black/[0.05] text-neutral-400 uppercase tracking-wider font-semibold text-[11px]">
               <tr>
                 <th className="px-6 py-3">Payment Reference</th>
                 <th className="px-6 py-3">Invoice Number</th>
@@ -394,7 +394,7 @@ export default function CustomerPortal({ onOpenRecordPayment, onRecordPaymentFor
                 </tr>
               ) : (
                 payments.map((p) => (
-                  <tr key={p.id} className="hover:bg-[#F9FAFB] transition-colors">
+                  <tr key={p.id} className="hover:bg-white/50 transition-colors">
                     <td className="px-6 py-3.5 font-mono font-semibold text-neutral-800">
                       <div className="flex items-center space-x-1.5">
                         <span>{p.payment_reference}</span>

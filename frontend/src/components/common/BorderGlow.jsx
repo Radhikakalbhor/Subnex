@@ -14,13 +14,14 @@ export const BorderGlow = ({
   edgeSensitivity = 30,
   coneSpread = 25,
   glowColor = '40 80 80',
-  backgroundColor = 'rgba(255, 255, 255, 0.88)',
+  backgroundColor = 'rgba(255, 255, 255, 0.55)',
   borderRadius = 28,
   glowRadius = 40,
   glowIntensity = 1.0,
   animated = false,
   colors = ['#c084fc', '#f472b6', '#38bdf8'],
   glass = true,
+  backgroundOpacity = 0.55,
   style = {},
   ...props
 }) => {
@@ -105,10 +106,11 @@ export const BorderGlow = ({
         {glass ? (
           <GlassSurface
             borderRadius={Math.max(12, borderRadius - 2)}
-            backgroundOpacity={0.88}
+            backgroundOpacity={backgroundOpacity}
             distortionScale={-180}
             displace={0.5}
             blur={11}
+            refractive
             className="w-full h-full"
           >
             {children}
@@ -127,7 +129,7 @@ export const BorderGlowCard = ({
   contentClassName = '',
   edgeSensitivity = 30,
   glowColor = '40 80 80',
-  backgroundColor = 'rgba(255, 255, 255, 0.88)',
+  backgroundColor = 'rgba(255, 255, 255, 0.55)',
   borderRadius = 22,
   glowRadius = 40,
   glowIntensity = 1,
@@ -135,6 +137,7 @@ export const BorderGlowCard = ({
   animated = false,
   colors = ['#c084fc', '#f472b6', '#38bdf8'],
   glass = true,
+  backgroundOpacity = 0.55,
   ...props
 }) => {
   return (
@@ -149,6 +152,7 @@ export const BorderGlowCard = ({
       animated={animated}
       colors={colors}
       glass={glass}
+      backgroundOpacity={backgroundOpacity}
       className={cn('border border-black/[0.06] shadow-[0_2px_12px_rgba(0,0,0,0.02)]', className)}
       contentClassName={contentClassName}
       {...props}

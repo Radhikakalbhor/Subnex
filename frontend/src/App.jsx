@@ -505,19 +505,19 @@ export default function App() {
         {/* Common Ambient GradientWaves Background from React Bits */}
         <div className="fixed inset-0 z-0 pointer-events-auto">
           <GradientWaves
-            horizonColor="#3b82f6"
-            waveColor="#ffffff"
+            horizonColor="#2563eb"
+            waveColor="#93c5fd"
             crestColor="#FFFFFF"
-            speed={0.35}
-            amplitude={2.5}
-            relief={1}
+            speed={0.4}
+            amplitude={2.6}
+            relief={1.2}
             lightAngle={120}
             mouseInteraction
             swellOnClick
-            opacity={0.85}
+            opacity={0.92}
           />
-          {/* Downside white overlay to keep the white thing over the blue waves */}
-          <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent via-[#F5F6F8]/50 to-[#F5F6F8]/90" />
+          {/* Subtle ambient gradient overlay that preserves the vibrant waves for GlassSurface refraction */}
+          <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-white/20 via-transparent to-slate-900/[0.03]" />
         </div>
 
         {/* Foreground Content */}
